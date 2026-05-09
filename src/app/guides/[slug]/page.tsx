@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { MDXRemote } from "next-mdx-remote/rsc";
+import remarkGfm from "remark-gfm";
 import rehypePrettyCode from "rehype-pretty-code";
 import { getAllSlugs, getGuideBySlug } from "@/lib/guides";
 import { CATEGORIES } from "@/lib/categories";
@@ -75,6 +76,7 @@ export default async function GuidePage({ params }: PageProps) {
             components={mdxComponents}
             options={{
               mdxOptions: {
+                remarkPlugins: [remarkGfm],
                 rehypePlugins: [
                   [
                     rehypePrettyCode,
