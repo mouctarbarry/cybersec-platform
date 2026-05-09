@@ -1,8 +1,8 @@
 ---
-title: Securite Web avancee
+title: Sécurité Web avancee
 category: web
-description: XSS, CSRF, CSP, cookies securises et protections web modernes
-tags: [xss, csrf, csp, cookies, headers, securite-web]
+description: XSS, CSRF, CSP, cookies sécurisés et protections web modernes
+tags: [xss, csrf, csp, cookies, headers, sécurité-web]
 ---
 
 ## Cross-Site Scripting (XSS)
@@ -14,7 +14,7 @@ Injection de code JavaScript malveillant dans une page web.
 | Type | Persistance | Vecteur |
 |------|-------------|---------|
 | **Reflected** | Non | URL, parametres GET |
-| **Stored** | Oui | Base de donnees, commentaires |
+| **Stored** | Oui | Base de données, commentaires |
 | **DOM-based** | Non | Manipulation du DOM cote client |
 
 ### Exemple d'attaque
@@ -52,7 +52,7 @@ Forcer un utilisateur authentifie a executer une action a son insu.
 - **Token CSRF** : token unique par session, verifie cote serveur
 - **SameSite cookies** : `SameSite=Strict` ou `SameSite=Lax`
 - **Double Submit Cookie** : token dans le cookie ET dans le formulaire
-- **Verifier l'en-tete Origin/Referer**
+- **Vérifier l'en-tete Origin/Referer**
 
 ---
 
@@ -86,7 +86,7 @@ Content-Security-Policy:
 
 ---
 
-## Cookies securises
+## Cookies sécurisés
 
 ```
 Set-Cookie: session=abc123;
@@ -127,7 +127,7 @@ Access-Control-Max-Age: 86400
 
 ## Subresource Integrity (SRI)
 
-Verifier que les scripts tiers n'ont pas ete modifies.
+Vérifier que les scripts tiers n'ont pas ete modifies.
 
 ```html
 <script

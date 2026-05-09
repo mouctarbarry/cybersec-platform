@@ -125,7 +125,7 @@ Reconstitue la conversation complete entre client et serveur.
 | Symptome | Filtre | Indication |
 |----------|--------|------------|
 | Beaucoup de SYN sans ACK | `tcp.flags.syn==1 && tcp.flags.ack==0` | Scan de ports |
-| Retransmissions | `tcp.analysis.retransmission` | Probleme reseau |
+| Retransmissions | `tcp.analysis.retransmission` | Probleme réseau |
 | DNS suspects | `dns.qry.name contains "evil"` | Malware, C2 |
 | Requetes HTTP anormales | `http.request.uri contains "../"` | Tentative de traversal |
 
@@ -134,6 +134,6 @@ Reconstitue la conversation complete entre client et serveur.
 ## Bonnes pratiques
 
 - Capturer avec des filtres BPF pour limiter la taille
-- Analyser hors ligne (`.pcap`) pour ne pas surcharger le reseau
+- Analyser hors ligne (`.pcap`) pour ne pas surcharger le réseau
 - Utiliser des profils de colonnes adaptes au type d'analyse
 - Sauvegarder les filtres d'affichage frequents en bookmarks

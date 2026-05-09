@@ -1,4 +1,4 @@
-import type { GuideMeta } from './guides';
+import type { GuideMeta } from "./guides";
 
 export function searchGuides(guides: GuideMeta[], query: string): GuideMeta[] {
   const q = query.toLowerCase().trim();

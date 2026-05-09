@@ -1,8 +1,8 @@
 ---
-title: Securite reseau
+title: Sécurité réseau
 category: reseaux
-description: Firewalls, IDS/IPS, segmentation reseau, VPN et analyse de trafic
-tags: [firewall, ids, ips, vpn, segmentation, reseau]
+description: Firewalls, IDS/IPS, segmentation réseau, VPN et analyse de trafic
+tags: [firewall, ids, ips, vpn, segmentation, réseau]
 ---
 
 ## Firewall
@@ -11,7 +11,7 @@ tags: [firewall, ids, ips, vpn, segmentation, reseau]
 
 <TerminalBlock command="iptables -L -n -v" output="Lister toutes les regles du firewall" />
 
-<TerminalBlock command="iptables -A INPUT -p tcp --dport 22 -s 10.0.0.0/8 -j ACCEPT" output="Autoriser SSH depuis le reseau interne" />
+<TerminalBlock command="iptables -A INPUT -p tcp --dport 22 -s 10.0.0.0/8 -j ACCEPT" output="Autoriser SSH depuis le réseau interne" />
 
 <TerminalBlock command="iptables -A INPUT -p tcp --dport 22 -j DROP" output="Bloquer SSH depuis l'exterieur" />
 
@@ -44,7 +44,7 @@ tags: [firewall, ids, ips, vpn, segmentation, reseau]
 
 | | IDS | IPS |
 |---|-----|-----|
-| Mode | Passif (detection) | Actif (prevention) |
+| Mode | Passif (détection) | Actif (prevention) |
 | Action | Alerte | Bloque le trafic |
 | Position | Copie du trafic (TAP/SPAN) | En ligne (inline) |
 | Risque | Faux negatifs | Faux positifs (bloque du trafic legitime) |
@@ -56,11 +56,11 @@ tags: [firewall, ids, ips, vpn, segmentation, reseau]
 - **OSSEC** : Host-based IDS (HIDS)
 - **Fail2ban** : Protection contre le brute force
 
-<TerminalBlock command="fail2ban-client status sshd" output="Verifier les bans SSH actifs" />
+<TerminalBlock command="fail2ban-client status sshd" output="Vérifier les bans SSH actifs" />
 
 ---
 
-## Segmentation reseau
+## Segmentation réseau
 
 ```
 ┌──────────────────────────────────────────┐
@@ -84,7 +84,7 @@ tags: [firewall, ids, ips, vpn, segmentation, reseau]
 
 **Principes :**
 - Isoler les services publics dans une DMZ
-- Bases de donnees dans un reseau prive
+- Bases de données dans un réseau prive
 - Communication inter-zones via firewall uniquement
 - VLANs pour la segmentation logique
 
@@ -120,14 +120,14 @@ tags: [firewall, ids, ips, vpn, segmentation, reseau]
 - **DoH** (DNS over HTTPS) : chiffrement des requetes DNS
 - **DoT** (DNS over TLS) : alternative a DoH
 
-<TerminalBlock command="dig +dnssec example.com" output="Verifier les signatures DNSSEC" />
+<TerminalBlock command="dig +dnssec example.com" output="Vérifier les signatures DNSSEC" />
 
 ---
 
-## Bonnes pratiques reseau
+## Bonnes pratiques réseau
 
 - **Default deny** : tout bloquer, ouvrir au besoin
 - **Segmentation** : isoler les zones par niveau de confiance
 - **Chiffrement** : TLS pour tout le trafic applicatif
 - **Monitoring** : logs de flux, IDS, alerting
-- **Rotation** : changer les cles VPN et certificats regulierement
+- **Rotation** : changer les cles VPN et certificats régulièrement

@@ -1,14 +1,14 @@
 ---
 title: Incident Response
 category: fondamentaux
-description: Processus de reponse aux incidents — detection, containment, eradication et recovery
+description: Processus de reponse aux incidents — détection, containment, eradication et recovery
 tags: [incident, reponse, forensics, containment, recovery]
 ---
 
 ## Les 6 phases (NIST SP 800-61)
 
 ```
-1. Preparation  →  2. Detection  →  3. Containment  →  4. Eradication  →  5. Recovery  →  6. Lessons Learned
+1. Preparation  →  2. Détection  →  3. Containment  →  4. Eradication  →  5. Recovery  →  6. Lessons Learned
 ```
 
 ---
@@ -17,17 +17,17 @@ tags: [incident, reponse, forensics, containment, recovery]
 
 Avant l'incident :
 
-- **Equipe IR** : roles definis, contacts a jour
+- **Equipe IR** : roles definis, contacts à jour
 - **Playbooks** : procedures pour les scenarios courants
 - **Outils** : SIEM, EDR, forensics toolkit prets
-- **Backups** : testes et verifies regulierement
-- **Communication** : canaux securises, modeles d'emails
+- **Backups** : testés et vérifiés régulièrement
+- **Communication** : canaux sécurisés, modèles d'emails
 
 ---
 
-## Phase 2 — Detection et analyse
+## Phase 2 — Détection et analyse
 
-### Sources de detection
+### Sources de détection
 
 | Source | Type d'alerte |
 |--------|---------------|
@@ -54,9 +54,9 @@ Avant l'incident :
 
 <TerminalBlock command="ps auxf" output="Processus en cours avec arbre" />
 
-<TerminalBlock command="netstat -tulnp" output="Connexions reseau actives" />
+<TerminalBlock command="netstat -tulnp" output="Connexions réseau actives" />
 
-<TerminalBlock command="find /tmp /var/tmp -type f -mtime -1" output="Fichiers modifies dans les dernieres 24h dans /tmp" />
+<TerminalBlock command="find /tmp /var/tmp -type f -mtime -1" output="Fichiers modifies dans les dernières 24h dans /tmp" />
 
 ---
 
@@ -66,16 +66,16 @@ Limiter la propagation sans detruire les preuves.
 
 ### Court terme
 
-- Isoler la machine du reseau (VLAN de quarantaine)
+- Isoler la machine du réseau (VLAN de quarantaine)
 - Bloquer les IPs malveillantes au firewall
 - Revoquer les credentials compromis
 - Rediriger le trafic DNS malveillant
 
 ### Long terme
 
-- Patcher la vulnerabilite exploitee
+- Patcher la vulnérabilité exploitée
 - Renforcer les controles d'acces
-- Deployer des regles de detection supplementaires
+- Deployer des regles de détection supplementaires
 
 ---
 
@@ -85,24 +85,24 @@ Supprimer la cause et les artefacts de l'attaque.
 
 - Supprimer les malwares/backdoors
 - Fermer les comptes compromis
-- Patcher les systemes vulnerables
-- Scanner les systemes adjacents
+- Patcher les systèmes vulnérables
+- Scanner les systèmes adjacents
 
-<TerminalBlock command="clamscan -r /var/www/" output="Scan antivirus du repertoire web" />
+<TerminalBlock command="clamscan -r /var/www/" output="Scan antivirus du répertoire web" />
 
-<TerminalBlock command="rkhunter --check" output="Verifier la presence de rootkits" />
+<TerminalBlock command="rkhunter --check" output="Vérifier la presence de rootkits" />
 
 ---
 
 ## Phase 5 — Recovery
 
-Restaurer les services en toute securite.
+Restaurer les services en toute sécurité.
 
-- Restaurer depuis des backups verifies
-- Monitorer intensivement les systemes restaures
-- Valider l'integrite des donnees
+- Restaurer depuis des backups vérifiés
+- Monitorer intensivement les systèmes restaurés
+- Valider l'intégrité des données
 - Retablir l'acces progressivement
-- Verifier que l'attaquant n'a plus d'acces
+- Vérifier que l'attaquant n'a plus d'acces
 
 ---
 
@@ -112,7 +112,7 @@ Restaurer les services en toute securite.
 
 1. **Timeline** : chronologie detaillee de l'incident
 2. **Root Cause** : analyse des causes profondes (5 Whys)
-3. **Impact** : donnees affectees, duree, cout
+3. **Impact** : données affectees, duree, cout
 4. **What went well** : ce qui a fonctionne dans la reponse
 5. **What went wrong** : ce qui n'a pas fonctionne
 6. **Action items** : correctifs avec owners et deadlines
@@ -120,10 +120,10 @@ Restaurer les services en toute securite.
 ### Questions cles
 
 - Comment l'attaquant est-il entre ?
-- Combien de temps est-il reste non detecte ?
-- Quelles donnees ont ete accedees/exfiltrees ?
+- Combien de temps est-il reste non détecté ?
+- Quelles données ont ete accedees/exfiltrees ?
 - Nos controles ont-ils fonctionne comme prevu ?
-- Comment prevenir ce type d'incident a l'avenir ?
+- Comment prévenir ce type d'incident a l'avenir ?
 
 ---
 
@@ -136,7 +136,7 @@ Restaurer les services en toute securite.
 | Hash fichier | `sha256:abc123...` |
 | URL | `https://evil.com/payload.exe` |
 | Email | `phishing@spoofed.com` |
-| User-Agent | Chaine UA specifique au malware |
+| User-Agent | Chaine UA spécifique au malware |
 
 ---
 
@@ -144,8 +144,8 @@ Restaurer les services en toute securite.
 
 | Outil | Usage |
 |-------|-------|
-| **Volatility** | Analyse de memoire RAM |
+| **Volatility** | Analyse de mémoire RAM |
 | **Autopsy** | Analyse de disque |
-| **YARA** | Detection de malware par regles |
+| **YARA** | Détection de malware par regles |
 | **Velociraptor** | Collecte d'artefacts a distance |
 | **TheHive** | Plateforme de gestion d'incidents |

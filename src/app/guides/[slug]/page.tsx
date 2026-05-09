@@ -1,11 +1,12 @@
-import { notFound } from 'next/navigation';
-import Link from 'next/link';
-import { MDXRemote } from 'next-mdx-remote/rsc';
-import { getAllSlugs, getGuideBySlug } from '@/lib/guides';
-import { CATEGORIES } from '@/lib/categories';
-import { TerminalBlock } from '@/components/terminal-block';
-import { Footer } from '@/components/footer';
-import type { Metadata } from 'next';
+import { notFound } from "next/navigation";
+import Link from "next/link";
+import { MDXRemote } from "next-mdx-remote/rsc";
+import rehypePrettyCode from "rehype-pretty-code";
+import { getAllSlugs, getGuideBySlug } from "@/lib/guides";
+import { CATEGORIES } from "@/lib/categories";
+import { TerminalBlock } from "@/components/terminal-block";
+import { Footer } from "@/components/footer";
+import type { Metadata } from "next";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -15,7 +16,9 @@ export function generateStaticParams() {
   return getAllSlugs().map((slug) => ({ slug }));
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const guide = getGuideBySlug(slug);
   if (!guide) return {};
@@ -40,16 +43,18 @@ export default async function GuidePage({ params }: PageProps) {
     <>
       <main className="mx-auto max-w-4xl px-4 py-12">
         <nav className="mb-6">
-          <Link href="/" className="text-sm text-muted-foreground hover:text-foreground">
+          <Link
+            href="/"
+            className="text-sm text-muted-foreground hover:text-foreground"
+          >
             ← Tous les guides
           </Link>
         </nav>
 
         <header className="mb-8">
-          <div className="mb-2 flex items-center gap-2">
-            <span>{category.icon}</span>
-            <span className="text-sm text-muted-foreground">{category.label}</span>
-          </div>
+          <span className="mb-2 inline-block rounded-md bg-secondary px-2.5 py-1 text-xs font-medium text-muted-foreground">
+            {category.label}
+          </span>
           <h1 className="mb-2 font-mono text-4xl font-bold">{guide.title}</h1>
           <p className="text-lg text-muted-foreground">{guide.description}</p>
           <div className="mt-3 flex flex-wrap gap-1">
@@ -65,7 +70,20 @@ export default async function GuidePage({ params }: PageProps) {
         </header>
 
         <article className="prose prose-neutral dark:prose-invert max-w-none">
-          <MDXRemote source={guide.content} components={mdxComponents} />
+          <MDXRemote
+            source={guide.content}
+            components={mdxComponents}
+            options={{
+              mdxOptions: {
+                rehypePlugins: [
+                  [
+                    rehypePrettyCode,
+                    { theme: "one-dark-pro", keepBackground: true },
+                  ],
+                ],
+              },
+            }}
+          />
         </article>
       </main>
 

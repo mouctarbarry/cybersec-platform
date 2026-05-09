@@ -2,10 +2,10 @@
 title: Container Security
 category: hardening
 description: Securisation des conteneurs Docker et Kubernetes — images, runtime et orchestration
-tags: [docker, kubernetes, conteneurs, securite, scanning]
+tags: [docker, kubernetes, conteneurs, sécurité, scanning]
 ---
 
-## Images Docker securisees
+## Images Docker sécurisées
 
 ### Bonnes pratiques Dockerfile
 
@@ -36,18 +36,18 @@ CMD ["app/server.js"]
 - **Images minimales** : Alpine ou Distroless
 - **Multi-stage builds** : pas d'outils de build en production
 - **Pas de root** : `USER 1000` ou utilisateur non-root
-- **COPY specifique** : pas de `COPY . .` sans `.dockerignore`
+- **COPY spécifique** : pas de `COPY . .` sans `.dockerignore`
 - **Versions fixees** : `node:22.0.0-alpine` pas `node:latest`
 
 ---
 
 ## Scan d'images
 
-<TerminalBlock command="trivy image mon-app:latest" output="Scanner les vulnerabilites d'une image Docker" />
+<TerminalBlock command="trivy image mon-app:latest" output="Scanner les vulnérabilités d'une image Docker" />
 
-<TerminalBlock command="trivy image --severity HIGH,CRITICAL mon-app:latest" output="Uniquement les vulnerabilites hautes et critiques" />
+<TerminalBlock command="trivy image --severity HIGH,CRITICAL mon-app:latest" output="Uniquement les vulnérabilités hautes et critiques" />
 
-<TerminalBlock command="docker scout cves mon-app:latest" output="Docker Scout — analyse de vulnerabilites" />
+<TerminalBlock command="docker scout cves mon-app:latest" output="Docker Scout — analyse de vulnérabilités" />
 
 <TerminalBlock command="grype mon-app:latest" output="Grype — scanner open source d'Anchore" />
 
@@ -82,7 +82,7 @@ CMD ["app/server.js"]
 }
 ```
 
-### Execution securisee
+### Execution sécurisée
 
 <TerminalBlock command="docker run --read-only --tmpfs /tmp mon-app" output="Filesystem en lecture seule" />
 
@@ -100,7 +100,7 @@ CMD ["app/server.js"]
 - [ ] Limites de ressources definies
 - [ ] Images scannees dans le pipeline CI
 - [ ] Pas de secrets dans les variables d'environnement de `docker run`
-- [ ] Reseau Docker isole par application
+- [ ] Réseau Docker isole par application
 
 ---
 
@@ -198,7 +198,7 @@ roleRef:
 | **kube-bench** | Audit CIS Benchmark |
 | **Falco** | Runtime security monitoring |
 | **OPA/Gatekeeper** | Policy enforcement |
-| **kubescape** | Scan de securite complet |
+| **kubescape** | Scan de sécurité complet |
 
 <TerminalBlock command="kube-bench run --targets node" output="Audit CIS Benchmark du node" />
 

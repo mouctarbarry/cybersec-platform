@@ -1,8 +1,8 @@
 ---
 title: OWASP Top 10
 category: web
-description: Les 10 vulnerabilites web les plus critiques selon l'OWASP et comment s'en proteger
-tags: [owasp, web, xss, injection, securite-web]
+description: Les 10 vulnérabilités web les plus critiques selon l'OWASP et comment s'en protéger
+tags: [owasp, web, xss, injection, sécurité-web]
 ---
 
 ## A01 — Broken Access Control
@@ -15,7 +15,7 @@ Acces a des ressources non autorisees.
 - IDOR (Insecure Direct Object Reference)
 
 **Protection :**
-- Verifier les permissions cote serveur a chaque requete
+- Vérifier les permissions cote serveur a chaque requete
 - Utiliser des tokens opaques au lieu d'IDs sequentiels
 - Deny by default — tout est interdit sauf autorisation explicite
 
@@ -26,7 +26,7 @@ Acces a des ressources non autorisees.
 Donnees sensibles exposees par manque de chiffrement.
 
 **Exemples :**
-- Mots de passe en clair dans la base de donnees
+- Mots de passe en clair dans la base de données
 - HTTP au lieu de HTTPS
 - Algorithmes obsoletes (MD5, SHA1, DES)
 
@@ -77,12 +77,12 @@ os.system("ping " + user_input)
 
 ## A04 — Insecure Design
 
-Failles architecturales, pas juste des bugs d'implementation.
+Failles architecturales, pas juste des bugs d'implémentation.
 
 **Protection :**
 - Threat modeling des la conception
 - Security requirements dans les user stories
-- Revue de design securite avant l'implementation
+- Revue de design sécurité avant l'implémentation
 
 ---
 
@@ -92,11 +92,11 @@ Mauvaise configuration des serveurs, frameworks ou cloud.
 
 **Exemples :**
 - Ports ouverts inutilement
-- Headers de securite manquants
+- Headers de sécurité manquants
 - Pages d'erreur qui exposent des stack traces
 - Comptes par defaut non desactives
 
-**Headers de securite essentiels :**
+**Headers de sécurité essentiels :**
 
 ```
 Content-Security-Policy: default-src 'self'
@@ -111,15 +111,15 @@ Permissions-Policy: camera=(), microphone=(), geolocation=()
 
 ## A06 — Vulnerable Components
 
-Dependances avec des vulnerabilites connues.
+Dépendances avec des vulnérabilités connues.
 
 **Protection :**
 
-<TerminalBlock command="npm audit" output="Verifier les vulnerabilites dans les dependances Node.js" />
+<TerminalBlock command="npm audit" output="Vérifier les vulnérabilités dans les dépendances Node.js" />
 
 <TerminalBlock command="trivy image mon-app:latest" output="Scanner une image Docker" />
 
-- Dependabot ou Renovate pour les mises a jour automatiques
+- Dependabot ou Renovate pour les mises à jour automatiques
 - Software Composition Analysis (SCA) dans le pipeline CI
 
 ---
@@ -139,10 +139,10 @@ Failles dans l'authentification et la gestion de session.
 
 ## A08 — Software and Data Integrity Failures
 
-Code ou donnees modifies sans verification.
+Code ou données modifies sans verification.
 
 **Protection :**
-- Verification d'integrite des packages (checksums, signatures)
+- Vérification d'intégrité des packages (checksums, signatures)
 - CI/CD securise avec revue de code obligatoire
 - Subresource Integrity (SRI) pour les CDN
 
@@ -155,7 +155,7 @@ Absence de logs ou monitoring insuffisant.
 **A logger :**
 - Tentatives de connexion (succes et echecs)
 - Changements de permissions
-- Acces a des donnees sensibles
+- Acces a des données sensibles
 - Erreurs d'autorisation
 
 **Ne PAS logger :**
@@ -171,5 +171,5 @@ Le serveur effectue des requetes vers des URLs controlees par l'attaquant.
 
 **Protection :**
 - Valider et filtrer les URLs cote serveur
-- Bloquer les requetes vers les reseaux internes (169.254.x.x, 10.x.x.x)
+- Bloquer les requetes vers les réseaux internes (169.254.x.x, 10.x.x.x)
 - Utiliser une allowlist d'URLs autorisees

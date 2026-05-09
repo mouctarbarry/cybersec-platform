@@ -1,36 +1,36 @@
 ---
-title: Fondamentaux de la securite
+title: Fondamentaux de la sécurité
 category: fondamentaux
-description: CIA Triad, modeles de menaces, defense en profondeur et principes fondamentaux de la cybersecurite
-tags: [cia, securite, menaces, defense-en-profondeur]
+description: CIA Triad, modèles de menaces, defense en profondeur et principes fondamentaux de la cybersécurité
+tags: [cia, sécurité, menaces, defense-en-profondeur]
 ---
 
 ## La triade CIA
 
-Les trois piliers de la securite de l'information :
+Les trois piliers de la sécurité de l'information :
 
 | Pilier | Objectif | Menaces |
 |--------|----------|---------|
-| **Confidentialite** | Seules les personnes autorisees accedent aux donnees | Interception, fuite de donnees, acces non autorise |
-| **Integrite** | Les donnees ne sont pas modifiees sans autorisation | Falsification, corruption, injection |
+| **Confidentialite** | Seules les personnes autorisees accedent aux données | Interception, fuite de données, acces non autorise |
+| **Integrite** | Les données ne sont pas modifiees sans autorisation | Falsification, corruption, injection |
 | **Disponibilite** | Les services restent accessibles | DDoS, panne, ransomware |
 
 ---
 
 ## Defense en profondeur
 
-Superposer plusieurs couches de securite pour qu'un echec unique ne compromette pas le systeme.
+Superposer plusieurs couches de sécurité pour qu'un echec unique ne compromette pas le système.
 
 ```
 ┌─────────────────────────────────────┐
 │           Politiques &              │
 │           Procedures                │
 │  ┌───────────────────────────────┐  │
-│  │       Securite physique       │  │
+│  │       Sécurité physique       │  │
 │  │  ┌─────────────────────────┐  │  │
-│  │  │     Perimetre reseau    │  │  │
+│  │  │     Perimetre réseau    │  │  │
 │  │  │  ┌───────────────────┐  │  │  │
-│  │  │  │  Reseau interne   │  │  │  │
+│  │  │  │  Réseau interne   │  │  │  │
 │  │  │  │  ┌─────────────┐  │  │  │  │
 │  │  │  │  │    Hote      │  │  │  │  │
 │  │  │  │  │  ┌────────┐  │  │  │  │  │
@@ -50,9 +50,9 @@ Superposer plusieurs couches de securite pour qu'un echec unique ne compromette 
 Chaque utilisateur, processus ou service ne doit avoir que les permissions strictement necessaires.
 
 - **Utilisateurs** : pas d'acces admin par defaut
-- **Applications** : droits minimaux sur la base de donnees
+- **Applications** : droits minimaux sur la base de données
 - **Conteneurs** : pas de `root`, capabilities limitees
-- **IAM** : politiques specifiques, pas de `*` wildcards
+- **IAM** : politiques spécifiques, pas de `*` wildcards
 
 ---
 
@@ -62,7 +62,7 @@ Chaque utilisateur, processus ou service ne doit avoir que les permissions stric
 
 | Principe | Application |
 |----------|-------------|
-| Verifier explicitement | Authentification forte a chaque requete |
+| Vérifier explicitement | Authentification forte a chaque requete |
 | Moindre privilege | Acces juste-a-temps, juste-assez |
 | Presumer la compromission | Segmentation, chiffrement, monitoring |
 
@@ -74,10 +74,10 @@ Chaque utilisateur, processus ou service ne doit avoir que les permissions stric
 
 | Menace | Description | Contre-mesure |
 |--------|-------------|---------------|
-| **S**poofing | Usurpation d'identite | Authentification forte, MFA |
-| **T**ampering | Modification de donnees | Signatures, checksums, integrite |
+| **S**poofing | Usurpation d'identité | Authentification forte, MFA |
+| **T**ampering | Modification de données | Signatures, checksums, intégrité |
 | **R**epudiation | Nier une action | Journalisation, audit trail |
-| **I**nformation disclosure | Fuite de donnees | Chiffrement, controle d'acces |
+| **I**nformation disclosure | Fuite de données | Chiffrement, controle d'acces |
 | **D**enial of service | Rendre un service indisponible | Rate limiting, CDN, auto-scaling |
 | **E**levation of privilege | Obtenir des droits superieurs | Moindre privilege, sandboxing |
 
@@ -99,7 +99,7 @@ Chaque utilisateur, processus ou service ne doit avoir que les permissions stric
 
 - **MFA partout** : authentification multi-facteurs obligatoire
 - **Chiffrement** : au repos et en transit (TLS 1.3)
-- **Patches** : mises a jour de securite automatiques
+- **Patches** : mises à jour de sécurité automatiques
 - **Backups** : sauvegardes testees, hors ligne, chiffrees
 - **Monitoring** : SIEM, alertes, audit logs
 - **Formation** : sensibilisation des utilisateurs

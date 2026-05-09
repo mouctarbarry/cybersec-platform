@@ -2,7 +2,7 @@
 title: Linux Hardening
 category: hardening
 description: Securisation d'un serveur Linux — SSH, utilisateurs, permissions, audit et bonnes pratiques
-tags: [linux, hardening, ssh, permissions, audit, securite]
+tags: [linux, hardening, ssh, permissions, audit, sécurité]
 ---
 
 ## SSH Hardening
@@ -28,9 +28,9 @@ X11Forwarding no
 
 ### Cles SSH
 
-<TerminalBlock command="ssh-keygen -t ed25519 -C 'serveur-prod'" output="Generer une cle Ed25519" />
+<TerminalBlock command="ssh-keygen -t ed25519 -C 'serveur-prod'" output="Generer une clé Ed25519" />
 
-<TerminalBlock command="ssh-copy-id -i ~/.ssh/id_ed25519.pub user@server" output="Copier la cle publique sur le serveur" />
+<TerminalBlock command="ssh-copy-id -i ~/.ssh/id_ed25519.pub user@server" output="Copier la clé publique sur le serveur" />
 
 ---
 
@@ -79,13 +79,13 @@ chmod 640 /etc/shadow               # Lecture owner+group, pas others
 
 ---
 
-## Mises a jour automatiques
+## Mises à jour automatiques
 
 ### Ubuntu/Debian
 
 <TerminalBlock command="apt install unattended-upgrades" />
 
-<TerminalBlock command="dpkg-reconfigure -plow unattended-upgrades" output="Activer les mises a jour de securite automatiques" />
+<TerminalBlock command="dpkg-reconfigure -plow unattended-upgrades" output="Activer les mises à jour de sécurité automatiques" />
 
 ### Configuration `/etc/apt/apt.conf.d/50unattended-upgrades` :
 
@@ -115,9 +115,9 @@ Unattended-Upgrade::Automatic-Reboot-Time "03:00";
 
 ## Audit et monitoring
 
-<TerminalBlock command="last -20" output="20 dernieres connexions" />
+<TerminalBlock command="last -20" output="20 dernières connexions" />
 
-<TerminalBlock command="lastb -20" output="20 dernieres tentatives echouees" />
+<TerminalBlock command="lastb -20" output="20 dernières tentatives échouées" />
 
 <TerminalBlock command="journalctl -u sshd --since '1 hour ago'" output="Logs SSH de la derniere heure" />
 
@@ -134,7 +134,7 @@ Unattended-Upgrade::Automatic-Reboot-Time "03:00";
 -a always,exit -F arch=b64 -S execve -k exec_commands
 ```
 
-<TerminalBlock command="ausearch -k identity --start today" output="Rechercher les modifications d'identite" />
+<TerminalBlock command="ausearch -k identity --start today" output="Rechercher les modifications d'identité" />
 
 ---
 
@@ -174,7 +174,7 @@ kernel.randomize_va_space = 2
 
 - [ ] SSH : cles uniquement, port change, root interdit
 - [ ] Firewall : default deny, ports minimaux ouverts
-- [ ] Mises a jour : automatiques pour les patches de securite
+- [ ] Mises à jour : automatiques pour les patches de sécurité
 - [ ] Utilisateurs : pas de comptes inutiles, sudo audite
 - [ ] Permissions : pas de SUID/SGID inutiles
 - [ ] Logs : centralises, auditd active
