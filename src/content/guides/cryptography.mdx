@@ -1,0 +1,141 @@
+---
+title: Cryptographie
+category: cryptographie
+description: Chiffrement symetrique, asymetrique, hashing, signatures numeriques et PKI
+tags: [chiffrement, hashing, rsa, aes, tls, certificats]
+---
+
+## Chiffrement symetrique
+
+Une seule cle pour chiffrer et dechiffrer.
+
+| Algorithme | Taille de cle | Usage |
+|------------|--------------|-------|
+| **AES-256-GCM** | 256 bits | Standard actuel, chiffrement au repos |
+| **ChaCha20-Poly1305** | 256 bits | Alternative a AES, mobile |
+| ~~DES~~ | 56 bits | Obsolete — ne pas utiliser |
+| ~~3DES~~ | 168 bits | Deprecie — ne pas utiliser |
+
+<TerminalBlock command="openssl enc -aes-256-cbc -salt -in fichier.txt -out fichier.enc" output="Chiffrer un fichier avec AES-256" />
+
+<TerminalBlock command="openssl enc -d -aes-256-cbc -in fichier.enc -out fichier.txt" output="Dechiffrer" />
+
+---
+
+## Chiffrement asymetrique
+
+Paire de cles : publique (chiffrer) et privee (dechiffrer).
+
+| Algorithme | Usage | Taille recommandee |
+|------------|-------|--------------------|
+| **RSA** | Chiffrement, signatures | 4096 bits |
+| **ECDSA** | Signatures (plus rapide) | P-256 ou P-384 |
+| **Ed25519** | Signatures SSH/TLS | 256 bits |
+| **X25519** | Echange de cles | 256 bits |
+
+<TerminalBlock command="ssh-keygen -t ed25519 -C 'email@example.com'" output="Generer une cle SSH Ed25519" />
+
+<TerminalBlock command="openssl genrsa -out private.pem 4096" output="Generer une cle RSA 4096 bits" />
+
+<TerminalBlock command="openssl rsa -in private.pem -pubout -out public.pem" output="Extraire la cle publique" />
+
+---
+
+## Hashing
+
+Fonction a sens unique : impossible de retrouver l'entree a partir du hash.
+
+| Algorithme | Taille | Usage |
+|------------|--------|-------|
+| **SHA-256** | 256 bits | Verification d'integrite |
+| **SHA-3** | Variable | Nouvelle generation |
+| **BLAKE3** | 256 bits | Rapide, moderne |
+| ~~MD5~~ | 128 bits | Casse — ne pas utiliser |
+| ~~SHA-1~~ | 160 bits | Casse — ne pas utiliser |
+
+<TerminalBlock command="sha256sum fichier.iso" output="Calculer le hash SHA-256 d'un fichier" />
+
+### Hashing de mots de passe
+
+Les fonctions de hashing classiques (SHA-256) sont trop rapides pour les mots de passe. Utiliser des fonctions conçues pour etre lentes :
+
+| Algorithme | Recommandation |
+|------------|---------------|
+| **Argon2id** | Recommande (winner PHC) |
+| **bcrypt** | Bon choix, largement supporte |
+| **scrypt** | Alternative solide |
+| ~~PBKDF2~~ | Acceptable si pas d'alternative |
+
+---
+
+## Signatures numeriques
+
+Prouver l'authenticite et l'integrite d'un message.
+
+```
+1. Alice hash le message → H
+2. Alice chiffre H avec sa cle privee → Signature
+3. Alice envoie message + signature
+4. Bob dechiffre la signature avec la cle publique d'Alice → H'
+5. Bob hash le message recu → H''
+6. Si H' == H'' → message authentique et integre
+```
+
+<TerminalBlock command="openssl dgst -sha256 -sign private.pem -out signature.bin message.txt" output="Signer un fichier" />
+
+<TerminalBlock command="openssl dgst -sha256 -verify public.pem -signature signature.bin message.txt" output="Verifier une signature" />
+
+---
+
+## TLS (Transport Layer Security)
+
+### Handshake TLS 1.3
+
+```
+Client                              Server
+  │                                    │
+  ├── ClientHello (ciphers, key) ────→ │
+  │                                    │
+  │ ←── ServerHello + Certificate ─────┤
+  │ ←── Finished ──────────────────────┤
+  │                                    │
+  ├── Finished ──────────────────────→ │
+  │                                    │
+  │ ←═══ Encrypted traffic ══════════→ │
+```
+
+- **TLS 1.3** : 1-RTT handshake, forward secrecy obligatoire
+- **TLS 1.2** : acceptable mais 2-RTT
+- ~~TLS 1.0/1.1~~ : deprecie, a desactiver
+- ~~SSL~~ : obsolete depuis 2015
+
+---
+
+## PKI et certificats
+
+### Chaine de confiance
+
+```
+Root CA (auto-signe, stocke dans l'OS/navigateur)
+  └── Intermediate CA (signe par Root CA)
+        └── Certificat serveur (signe par Intermediate CA)
+```
+
+<TerminalBlock command="openssl x509 -in cert.pem -text -noout" output="Examiner un certificat" />
+
+<TerminalBlock command="openssl s_client -connect example.com:443 -servername example.com" output="Verifier le certificat d'un serveur" />
+
+### Let's Encrypt (ACME)
+
+<TerminalBlock command="certbot certonly --standalone -d example.com" output="Obtenir un certificat gratuit Let's Encrypt" />
+
+---
+
+## Bonnes pratiques
+
+- **AES-256-GCM** ou **ChaCha20** pour le chiffrement symetrique
+- **Ed25519** pour les cles SSH
+- **Argon2id** pour les mots de passe
+- **TLS 1.3** minimum pour le trafic reseau
+- Ne jamais implementer sa propre cryptographie
+- Rotation reguliere des cles et certificats

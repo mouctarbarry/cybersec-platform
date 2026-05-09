@@ -1,0 +1,175 @@
+---
+title: OWASP Top 10
+category: web
+description: Les 10 vulnerabilites web les plus critiques selon l'OWASP et comment s'en proteger
+tags: [owasp, web, xss, injection, securite-web]
+---
+
+## A01 — Broken Access Control
+
+Acces a des ressources non autorisees.
+
+**Exemples :**
+- Modification d'URL : `/api/users/123` → `/api/users/456`
+- Acces admin sans verification de role
+- IDOR (Insecure Direct Object Reference)
+
+**Protection :**
+- Verifier les permissions cote serveur a chaque requete
+- Utiliser des tokens opaques au lieu d'IDs sequentiels
+- Deny by default — tout est interdit sauf autorisation explicite
+
+---
+
+## A02 — Cryptographic Failures
+
+Donnees sensibles exposees par manque de chiffrement.
+
+**Exemples :**
+- Mots de passe en clair dans la base de donnees
+- HTTP au lieu de HTTPS
+- Algorithmes obsoletes (MD5, SHA1, DES)
+
+**Protection :**
+- TLS 1.3 pour tout le trafic
+- Bcrypt ou Argon2 pour les mots de passe
+- AES-256-GCM pour le chiffrement au repos
+- Ne jamais stocker de secrets en dur dans le code
+
+---
+
+## A03 — Injection
+
+Donnees non validees interpretees comme du code.
+
+### SQL Injection
+
+```sql
+-- Vulnerable
+SELECT * FROM users WHERE email = 'input';
+
+-- Attaque
+' OR '1'='1' --
+
+-- Protection : requetes parametrees
+SELECT * FROM users WHERE email = $1;
+```
+
+### Command Injection
+
+```bash
+# Vulnerable
+os.system("ping " + user_input)
+
+# Attaque
+; rm -rf /
+
+# Protection : ne jamais construire de commandes avec des inputs
+```
+
+**Protection :**
+- Requetes parametrees (prepared statements)
+- ORM pour les requetes SQL
+- Validation et sanitisation des entrees
+- Principe du moindre privilege pour les comptes DB
+
+---
+
+## A04 — Insecure Design
+
+Failles architecturales, pas juste des bugs d'implementation.
+
+**Protection :**
+- Threat modeling des la conception
+- Security requirements dans les user stories
+- Revue de design securite avant l'implementation
+
+---
+
+## A05 — Security Misconfiguration
+
+Mauvaise configuration des serveurs, frameworks ou cloud.
+
+**Exemples :**
+- Ports ouverts inutilement
+- Headers de securite manquants
+- Pages d'erreur qui exposent des stack traces
+- Comptes par defaut non desactives
+
+**Headers de securite essentiels :**
+
+```
+Content-Security-Policy: default-src 'self'
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+Referrer-Policy: strict-origin-when-cross-origin
+Permissions-Policy: camera=(), microphone=(), geolocation=()
+```
+
+---
+
+## A06 — Vulnerable Components
+
+Dependances avec des vulnerabilites connues.
+
+**Protection :**
+
+<TerminalBlock command="npm audit" output="Verifier les vulnerabilites dans les dependances Node.js" />
+
+<TerminalBlock command="trivy image mon-app:latest" output="Scanner une image Docker" />
+
+- Dependabot ou Renovate pour les mises a jour automatiques
+- Software Composition Analysis (SCA) dans le pipeline CI
+
+---
+
+## A07 — Authentication Failures
+
+Failles dans l'authentification et la gestion de session.
+
+**Protection :**
+- MFA obligatoire
+- Rate limiting sur les endpoints de login
+- Tokens JWT avec expiration courte
+- Sessions invalidees a la deconnexion
+- Politique de mots de passe robuste (longueur > complexite)
+
+---
+
+## A08 — Software and Data Integrity Failures
+
+Code ou donnees modifies sans verification.
+
+**Protection :**
+- Verification d'integrite des packages (checksums, signatures)
+- CI/CD securise avec revue de code obligatoire
+- Subresource Integrity (SRI) pour les CDN
+
+---
+
+## A09 — Security Logging and Monitoring Failures
+
+Absence de logs ou monitoring insuffisant.
+
+**A logger :**
+- Tentatives de connexion (succes et echecs)
+- Changements de permissions
+- Acces a des donnees sensibles
+- Erreurs d'autorisation
+
+**Ne PAS logger :**
+- Mots de passe
+- Tokens d'authentification
+- Donnees personnelles sensibles
+
+---
+
+## A10 — Server-Side Request Forgery (SSRF)
+
+Le serveur effectue des requetes vers des URLs controlees par l'attaquant.
+
+**Protection :**
+- Valider et filtrer les URLs cote serveur
+- Bloquer les requetes vers les reseaux internes (169.254.x.x, 10.x.x.x)
+- Utiliser une allowlist d'URLs autorisees

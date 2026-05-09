@@ -1,0 +1,133 @@
+---
+title: Securite reseau
+category: reseaux
+description: Firewalls, IDS/IPS, segmentation reseau, VPN et analyse de trafic
+tags: [firewall, ids, ips, vpn, segmentation, reseau]
+---
+
+## Firewall
+
+### iptables / nftables
+
+<TerminalBlock command="iptables -L -n -v" output="Lister toutes les regles du firewall" />
+
+<TerminalBlock command="iptables -A INPUT -p tcp --dport 22 -s 10.0.0.0/8 -j ACCEPT" output="Autoriser SSH depuis le reseau interne" />
+
+<TerminalBlock command="iptables -A INPUT -p tcp --dport 22 -j DROP" output="Bloquer SSH depuis l'exterieur" />
+
+<TerminalBlock command="iptables -P INPUT DROP" output="Politique par defaut : tout bloquer" />
+
+### UFW (Ubuntu)
+
+<TerminalBlock command="ufw enable" />
+
+<TerminalBlock command="ufw default deny incoming" />
+
+<TerminalBlock command="ufw allow from 10.0.0.0/8 to any port 22" />
+
+<TerminalBlock command="ufw status verbose" />
+
+### Regles essentielles
+
+| Port | Service | Recommandation |
+|------|---------|---------------|
+| 22 | SSH | Limiter aux IPs autorisees |
+| 80 | HTTP | Rediriger vers 443 |
+| 443 | HTTPS | Ouvert |
+| 3306 | MySQL | Ferme (acces local uniquement) |
+| 5432 | PostgreSQL | Ferme (acces local uniquement) |
+| 6379 | Redis | Ferme (pas d'auth par defaut) |
+
+---
+
+## IDS / IPS
+
+| | IDS | IPS |
+|---|-----|-----|
+| Mode | Passif (detection) | Actif (prevention) |
+| Action | Alerte | Bloque le trafic |
+| Position | Copie du trafic (TAP/SPAN) | En ligne (inline) |
+| Risque | Faux negatifs | Faux positifs (bloque du trafic legitime) |
+
+### Outils
+
+- **Suricata** : IDS/IPS open source, haute performance
+- **Snort** : Classique, large communaute de regles
+- **OSSEC** : Host-based IDS (HIDS)
+- **Fail2ban** : Protection contre le brute force
+
+<TerminalBlock command="fail2ban-client status sshd" output="Verifier les bans SSH actifs" />
+
+---
+
+## Segmentation reseau
+
+```
+┌──────────────────────────────────────────┐
+│                Internet                   │
+└────────────────┬─────────────────────────┘
+                 │
+         ┌───────┴───────┐
+         │   Firewall     │
+         └───┬───────┬───┘
+             │       │
+    ┌────────┴──┐ ┌──┴────────┐
+    │    DMZ     │ │  Interne   │
+    │ (Web, DNS) │ │ (Apps, DB) │
+    └───────────┘ └──────┬────┘
+                         │
+                  ┌──────┴─────┐
+                  │ Management  │
+                  │ (SSH, VPN)  │
+                  └────────────┘
+```
+
+**Principes :**
+- Isoler les services publics dans une DMZ
+- Bases de donnees dans un reseau prive
+- Communication inter-zones via firewall uniquement
+- VLANs pour la segmentation logique
+
+---
+
+## VPN
+
+| Type | Usage | Protocole |
+|------|-------|-----------|
+| **WireGuard** | Moderne, rapide, simple | UDP |
+| **OpenVPN** | Flexible, mature | TCP/UDP |
+| **IPsec** | Site-to-site, entreprise | ESP/AH |
+
+<TerminalBlock command="wg show" output="Afficher la configuration WireGuard active" />
+
+---
+
+## Analyse de trafic
+
+<TerminalBlock command="tcpdump -i eth0 -n port 443" output="Capturer le trafic HTTPS" />
+
+<TerminalBlock command="tcpdump -i eth0 -w capture.pcap" output="Sauvegarder une capture pour Wireshark" />
+
+<TerminalBlock command="ss -tlnp" output="Ports en ecoute et processus associes" />
+
+<TerminalBlock command="netstat -an | grep ESTABLISHED" output="Connexions actives" />
+
+---
+
+## DNS Security
+
+- **DNSSEC** : signatures cryptographiques sur les enregistrements DNS
+- **DoH** (DNS over HTTPS) : chiffrement des requetes DNS
+- **DoT** (DNS over TLS) : alternative a DoH
+
+<TerminalBlock command="dig +dnssec example.com" output="Verifier les signatures DNSSEC" />
+
+---
+
+## Bonnes pratiques reseau
+
+- **Default deny** : tout bloquer, ouvrir au besoin
+- **Segmentation** : isoler les zones par niveau de confiance
+- **Chiffrement** : TLS pour tout le trafic applicatif
+- **Monitoring** : logs de flux, IDS, alerting
+- **Rotation** : changer les cles VPN et certificats regulierement

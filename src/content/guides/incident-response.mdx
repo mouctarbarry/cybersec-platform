@@ -1,0 +1,151 @@
+---
+title: Incident Response
+category: fondamentaux
+description: Processus de reponse aux incidents — detection, containment, eradication et recovery
+tags: [incident, reponse, forensics, containment, recovery]
+---
+
+## Les 6 phases (NIST SP 800-61)
+
+```
+1. Preparation  →  2. Detection  →  3. Containment  →  4. Eradication  →  5. Recovery  →  6. Lessons Learned
+```
+
+---
+
+## Phase 1 — Preparation
+
+Avant l'incident :
+
+- **Equipe IR** : roles definis, contacts a jour
+- **Playbooks** : procedures pour les scenarios courants
+- **Outils** : SIEM, EDR, forensics toolkit prets
+- **Backups** : testes et verifies regulierement
+- **Communication** : canaux securises, modeles d'emails
+
+---
+
+## Phase 2 — Detection et analyse
+
+### Sources de detection
+
+| Source | Type d'alerte |
+|--------|---------------|
+| SIEM | Correlations, anomalies |
+| EDR | Comportement suspect sur endpoints |
+| IDS/IPS | Signatures, trafic anormal |
+| Utilisateurs | Rapports d'activite suspecte |
+| Threat Intel | IOC (Indicators of Compromise) |
+
+### Triage
+
+| Severite | Critere | Response Time |
+|----------|---------|---------------|
+| **P1 Critical** | Systeme en production compromis | Immediat |
+| **P2 High** | Donnees sensibles exposees | < 1 heure |
+| **P3 Medium** | Activite suspecte confirmee | < 4 heures |
+| **P4 Low** | Alerte a investiguer | < 24 heures |
+
+### Collecte d'evidence
+
+<TerminalBlock command="date -u" output="Timestamp UTC de debut d'investigation" />
+
+<TerminalBlock command="last -50" output="Historique des connexions" />
+
+<TerminalBlock command="ps auxf" output="Processus en cours avec arbre" />
+
+<TerminalBlock command="netstat -tulnp" output="Connexions reseau actives" />
+
+<TerminalBlock command="find /tmp /var/tmp -type f -mtime -1" output="Fichiers modifies dans les dernieres 24h dans /tmp" />
+
+---
+
+## Phase 3 — Containment
+
+Limiter la propagation sans detruire les preuves.
+
+### Court terme
+
+- Isoler la machine du reseau (VLAN de quarantaine)
+- Bloquer les IPs malveillantes au firewall
+- Revoquer les credentials compromis
+- Rediriger le trafic DNS malveillant
+
+### Long terme
+
+- Patcher la vulnerabilite exploitee
+- Renforcer les controles d'acces
+- Deployer des regles de detection supplementaires
+
+---
+
+## Phase 4 — Eradication
+
+Supprimer la cause et les artefacts de l'attaque.
+
+- Supprimer les malwares/backdoors
+- Fermer les comptes compromis
+- Patcher les systemes vulnerables
+- Scanner les systemes adjacents
+
+<TerminalBlock command="clamscan -r /var/www/" output="Scan antivirus du repertoire web" />
+
+<TerminalBlock command="rkhunter --check" output="Verifier la presence de rootkits" />
+
+---
+
+## Phase 5 — Recovery
+
+Restaurer les services en toute securite.
+
+- Restaurer depuis des backups verifies
+- Monitorer intensivement les systemes restaures
+- Valider l'integrite des donnees
+- Retablir l'acces progressivement
+- Verifier que l'attaquant n'a plus d'acces
+
+---
+
+## Phase 6 — Lessons Learned (Post-mortem)
+
+### Structure du post-mortem
+
+1. **Timeline** : chronologie detaillee de l'incident
+2. **Root Cause** : analyse des causes profondes (5 Whys)
+3. **Impact** : donnees affectees, duree, cout
+4. **What went well** : ce qui a fonctionne dans la reponse
+5. **What went wrong** : ce qui n'a pas fonctionne
+6. **Action items** : correctifs avec owners et deadlines
+
+### Questions cles
+
+- Comment l'attaquant est-il entre ?
+- Combien de temps est-il reste non detecte ?
+- Quelles donnees ont ete accedees/exfiltrees ?
+- Nos controles ont-ils fonctionne comme prevu ?
+- Comment prevenir ce type d'incident a l'avenir ?
+
+---
+
+## IOC (Indicators of Compromise)
+
+| Type | Exemple |
+|------|---------|
+| IP | `185.143.223.xxx` |
+| Domaine | `malware-c2.evil.com` |
+| Hash fichier | `sha256:abc123...` |
+| URL | `https://evil.com/payload.exe` |
+| Email | `phishing@spoofed.com` |
+| User-Agent | Chaine UA specifique au malware |
+
+---
+
+## Outils forensics
+
+| Outil | Usage |
+|-------|-------|
+| **Volatility** | Analyse de memoire RAM |
+| **Autopsy** | Analyse de disque |
+| **YARA** | Detection de malware par regles |
+| **Velociraptor** | Collecte d'artefacts a distance |
+| **TheHive** | Plateforme de gestion d'incidents |

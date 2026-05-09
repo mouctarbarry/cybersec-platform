@@ -1,0 +1,182 @@
+---
+title: Linux Hardening
+category: hardening
+description: Securisation d'un serveur Linux — SSH, utilisateurs, permissions, audit et bonnes pratiques
+tags: [linux, hardening, ssh, permissions, audit, securite]
+---
+
+## SSH Hardening
+
+Editer `/etc/ssh/sshd_config` :
+
+```
+Port 2222                          # Changer le port par defaut
+PermitRootLogin no                 # Interdire le login root
+PasswordAuthentication no          # Cles SSH uniquement
+PubkeyAuthentication yes
+MaxAuthTries 3
+ClientAliveInterval 300
+ClientAliveCountMax 2
+AllowUsers deploy admin            # Whitelist d'utilisateurs
+Protocol 2
+X11Forwarding no
+```
+
+<TerminalBlock command="sshd -t" output="Tester la configuration SSH avant de recharger" />
+
+<TerminalBlock command="systemctl restart sshd" />
+
+### Cles SSH
+
+<TerminalBlock command="ssh-keygen -t ed25519 -C 'serveur-prod'" output="Generer une cle Ed25519" />
+
+<TerminalBlock command="ssh-copy-id -i ~/.ssh/id_ed25519.pub user@server" output="Copier la cle publique sur le serveur" />
+
+---
+
+## Gestion des utilisateurs
+
+<TerminalBlock command="useradd -m -s /bin/bash -G sudo deploy" output="Creer un utilisateur avec acces sudo" />
+
+<TerminalBlock command="passwd -l root" output="Verrouiller le compte root" />
+
+<TerminalBlock command="chage -l deploy" output="Voir la politique de mots de passe" />
+
+<TerminalBlock command="chage -M 90 -W 14 deploy" output="Expiration du mot de passe a 90 jours, avertissement 14 jours avant" />
+
+### Sudo securise
+
+Editer avec `visudo` :
+
+```
+# Logs des commandes sudo
+Defaults    logfile="/var/log/sudo.log"
+Defaults    log_input, log_output
+
+# Timeout sudo (redemander le mot de passe apres 5 min)
+Defaults    timestamp_timeout=5
+
+# Pas de sudo sans mot de passe
+deploy ALL=(ALL) ALL
+```
+
+---
+
+## Permissions de fichiers
+
+```
+chmod 600 ~/.ssh/authorized_keys    # Lecture/ecriture owner uniquement
+chmod 700 ~/.ssh                    # Acces owner uniquement
+chmod 644 /etc/passwd               # Lecture pour tous, ecriture owner
+chmod 640 /etc/shadow               # Lecture owner+group, pas others
+```
+
+<TerminalBlock command="find / -perm -4000 -type f 2>/dev/null" output="Trouver les fichiers SUID (potentiellement dangereux)" />
+
+<TerminalBlock command="find / -perm -2000 -type f 2>/dev/null" output="Trouver les fichiers SGID" />
+
+<TerminalBlock command="find / -perm -o+w -type f 2>/dev/null" output="Trouver les fichiers world-writable" />
+
+---
+
+## Mises a jour automatiques
+
+### Ubuntu/Debian
+
+<TerminalBlock command="apt install unattended-upgrades" />
+
+<TerminalBlock command="dpkg-reconfigure -plow unattended-upgrades" output="Activer les mises a jour de securite automatiques" />
+
+### Configuration `/etc/apt/apt.conf.d/50unattended-upgrades` :
+
+```
+Unattended-Upgrade::Allowed-Origins {
+    "${distro_id}:${distro_codename}-security";
+};
+Unattended-Upgrade::Automatic-Reboot "true";
+Unattended-Upgrade::Automatic-Reboot-Time "03:00";
+```
+
+---
+
+## Firewall
+
+<TerminalBlock command="ufw default deny incoming" />
+
+<TerminalBlock command="ufw default allow outgoing" />
+
+<TerminalBlock command="ufw allow 2222/tcp comment 'SSH'" />
+
+<TerminalBlock command="ufw allow 443/tcp comment 'HTTPS'" />
+
+<TerminalBlock command="ufw enable" />
+
+---
+
+## Audit et monitoring
+
+<TerminalBlock command="last -20" output="20 dernieres connexions" />
+
+<TerminalBlock command="lastb -20" output="20 dernieres tentatives echouees" />
+
+<TerminalBlock command="journalctl -u sshd --since '1 hour ago'" output="Logs SSH de la derniere heure" />
+
+### Auditd
+
+<TerminalBlock command="apt install auditd" />
+
+```
+# /etc/audit/rules.d/audit.rules
+-w /etc/passwd -p wa -k identity
+-w /etc/shadow -p wa -k identity
+-w /etc/sudoers -p wa -k sudo_changes
+-w /var/log/ -p wa -k log_changes
+-a always,exit -F arch=b64 -S execve -k exec_commands
+```
+
+<TerminalBlock command="ausearch -k identity --start today" output="Rechercher les modifications d'identite" />
+
+---
+
+## Securisation du kernel
+
+Editer `/etc/sysctl.d/99-security.conf` :
+
+```
+# Desactiver le forwarding IP
+net.ipv4.ip_forward = 0
+
+# Ignorer les pings broadcast
+net.ipv4.icmp_echo_ignore_broadcasts = 1
+
+# Protection contre le SYN flood
+net.ipv4.tcp_syncookies = 1
+
+# Ignorer les redirections ICMP
+net.ipv4.conf.all.accept_redirects = 0
+net.ipv6.conf.all.accept_redirects = 0
+
+# Desactiver le source routing
+net.ipv4.conf.all.accept_source_route = 0
+
+# Logging des paquets martiens
+net.ipv4.conf.all.log_martians = 1
+
+# ASLR (Address Space Layout Randomization)
+kernel.randomize_va_space = 2
+```
+
+<TerminalBlock command="sysctl -p /etc/sysctl.d/99-security.conf" output="Appliquer les parametres" />
+
+---
+
+## Checklist de securisation
+
+- [ ] SSH : cles uniquement, port change, root interdit
+- [ ] Firewall : default deny, ports minimaux ouverts
+- [ ] Mises a jour : automatiques pour les patches de securite
+- [ ] Utilisateurs : pas de comptes inutiles, sudo audite
+- [ ] Permissions : pas de SUID/SGID inutiles
+- [ ] Logs : centralises, auditd active
+- [ ] Kernel : sysctl durci
+- [ ] Services : desactiver ceux qui ne sont pas necessaires

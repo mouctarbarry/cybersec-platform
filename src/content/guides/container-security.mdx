@@ -1,0 +1,205 @@
+---
+title: Container Security
+category: hardening
+description: Securisation des conteneurs Docker et Kubernetes — images, runtime et orchestration
+tags: [docker, kubernetes, conteneurs, securite, scanning]
+---
+
+## Images Docker securisees
+
+### Bonnes pratiques Dockerfile
+
+```dockerfile
+# Utiliser une image minimale
+FROM node:22-alpine AS builder
+
+# Ne pas tourner en root
+RUN addgroup -S app && adduser -S app -G app
+
+# Copier uniquement le necessaire
+COPY --chown=app:app package.json pnpm-lock.yaml ./
+RUN corepack enable && pnpm install --frozen-lockfile --prod
+
+COPY --chown=app:app . .
+RUN pnpm build
+
+# Image finale minimale
+FROM gcr.io/distroless/nodejs22-debian12
+COPY --from=builder /app/dist /app
+USER 1000
+EXPOSE 3000
+CMD ["app/server.js"]
+```
+
+### Regles d'or
+
+- **Images minimales** : Alpine ou Distroless
+- **Multi-stage builds** : pas d'outils de build en production
+- **Pas de root** : `USER 1000` ou utilisateur non-root
+- **COPY specifique** : pas de `COPY . .` sans `.dockerignore`
+- **Versions fixees** : `node:22.0.0-alpine` pas `node:latest`
+
+---
+
+## Scan d'images
+
+<TerminalBlock command="trivy image mon-app:latest" output="Scanner les vulnerabilites d'une image Docker" />
+
+<TerminalBlock command="trivy image --severity HIGH,CRITICAL mon-app:latest" output="Uniquement les vulnerabilites hautes et critiques" />
+
+<TerminalBlock command="docker scout cves mon-app:latest" output="Docker Scout — analyse de vulnerabilites" />
+
+<TerminalBlock command="grype mon-app:latest" output="Grype — scanner open source d'Anchore" />
+
+### Integration CI
+
+```yaml
+# GitHub Actions
+- name: Scan image
+  uses: aquasecurity/trivy-action@master
+  with:
+    image-ref: mon-app:latest
+    severity: HIGH,CRITICAL
+    exit-code: 1
+```
+
+---
+
+## Runtime Docker securise
+
+### Docker daemon
+
+```json
+{
+  "icc": false,
+  "userns-remap": "default",
+  "no-new-privileges": true,
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "10m",
+    "max-file": "3"
+  }
+}
+```
+
+### Execution securisee
+
+<TerminalBlock command="docker run --read-only --tmpfs /tmp mon-app" output="Filesystem en lecture seule" />
+
+<TerminalBlock command="docker run --cap-drop=ALL --cap-add=NET_BIND_SERVICE mon-app" output="Capabilities minimales" />
+
+<TerminalBlock command="docker run --security-opt=no-new-privileges mon-app" output="Empecher l'escalade de privileges" />
+
+<TerminalBlock command="docker run --memory=256m --cpus=0.5 mon-app" output="Limiter les ressources" />
+
+### Checklist Docker
+
+- [ ] Pas de conteneur en root
+- [ ] Capabilities droppees
+- [ ] Filesystem read-only quand possible
+- [ ] Limites de ressources definies
+- [ ] Images scannees dans le pipeline CI
+- [ ] Pas de secrets dans les variables d'environnement de `docker run`
+- [ ] Reseau Docker isole par application
+
+---
+
+## Kubernetes Security
+
+### Pod Security Standards
+
+```yaml
+apiVersion: v1
+kind: Pod
+spec:
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    fsGroup: 1000
+    seccompProfile:
+      type: RuntimeDefault
+  containers:
+    - name: app
+      securityContext:
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        capabilities:
+          drop: ["ALL"]
+      resources:
+        limits:
+          cpu: 500m
+          memory: 256Mi
+        requests:
+          cpu: 100m
+          memory: 128Mi
+```
+
+### Network Policies
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: deny-all
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+    - Egress
+```
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-api-to-db
+spec:
+  podSelector:
+    matchLabels:
+      app: db
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: api
+      ports:
+        - port: 5432
+```
+
+### RBAC
+
+```yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: pod-reader
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: read-pods
+subjects:
+  - kind: ServiceAccount
+    name: monitoring
+roleRef:
+  kind: Role
+  name: pod-reader
+  apiGroup: rbac.authorization.k8s.io
+```
+
+### Outils K8s Security
+
+| Outil | Usage |
+|-------|-------|
+| **kube-bench** | Audit CIS Benchmark |
+| **Falco** | Runtime security monitoring |
+| **OPA/Gatekeeper** | Policy enforcement |
+| **kubescape** | Scan de securite complet |
+
+<TerminalBlock command="kube-bench run --targets node" output="Audit CIS Benchmark du node" />
+
+<TerminalBlock command="kubescape scan framework nsa" output="Scan NSA/CISA Kubernetes Hardening" />
