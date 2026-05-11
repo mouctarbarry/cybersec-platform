@@ -1,7 +1,7 @@
 ---
 title: Container Security
 category: hardening
-description: Securisation des conteneurs Docker et Kubernetes — images, runtime et orchestration
+description: Sécurisation des conteneurs Docker et Kubernetes — images, runtime et orchestration
 tags: [docker, kubernetes, conteneurs, sécurité, scanning]
 ---
 
@@ -16,7 +16,7 @@ FROM node:22-alpine AS builder
 # Ne pas tourner en root
 RUN addgroup -S app && adduser -S app -G app
 
-# Copier uniquement le necessaire
+# Copier uniquement le nécessaire
 COPY --chown=app:app package.json pnpm-lock.yaml ./
 RUN corepack enable && pnpm install --frozen-lockfile --prod
 
@@ -31,13 +31,13 @@ EXPOSE 3000
 CMD ["app/server.js"]
 ```
 
-### Regles d'or
+### Règles d'or
 
 - **Images minimales** : Alpine ou Distroless
 - **Multi-stage builds** : pas d'outils de build en production
 - **Pas de root** : `USER 1000` ou utilisateur non-root
 - **COPY spécifique** : pas de `COPY . .` sans `.dockerignore`
-- **Versions fixees** : `node:22.0.0-alpine` pas `node:latest`
+- **Versions fixées** : `node:22.0.0-alpine` pas `node:latest`
 
 ---
 
@@ -51,7 +51,7 @@ CMD ["app/server.js"]
 
 <TerminalBlock command="grype mon-app:latest" output="Grype — scanner open source d'Anchore" />
 
-### Integration CI
+### Intégration CI
 
 ```yaml
 # GitHub Actions
@@ -65,7 +65,7 @@ CMD ["app/server.js"]
 
 ---
 
-## Runtime Docker securise
+## Runtime Docker sécurisé
 
 ### Docker daemon
 
@@ -82,25 +82,25 @@ CMD ["app/server.js"]
 }
 ```
 
-### Execution sécurisée
+### Exécution sécurisée
 
 <TerminalBlock command="docker run --read-only --tmpfs /tmp mon-app" output="Filesystem en lecture seule" />
 
 <TerminalBlock command="docker run --cap-drop=ALL --cap-add=NET_BIND_SERVICE mon-app" output="Capabilities minimales" />
 
-<TerminalBlock command="docker run --security-opt=no-new-privileges mon-app" output="Empecher l'escalade de privileges" />
+<TerminalBlock command="docker run --security-opt=no-new-privileges mon-app" output="Empêcher l'escalade de privilèges" />
 
 <TerminalBlock command="docker run --memory=256m --cpus=0.5 mon-app" output="Limiter les ressources" />
 
 ### Checklist Docker
 
 - [ ] Pas de conteneur en root
-- [ ] Capabilities droppees
+- [ ] Capabilities droppées
 - [ ] Filesystem read-only quand possible
-- [ ] Limites de ressources definies
-- [ ] Images scannees dans le pipeline CI
+- [ ] Limites de ressources définies
+- [ ] Images scannées dans le pipeline CI
 - [ ] Pas de secrets dans les variables d'environnement de `docker run`
-- [ ] Réseau Docker isole par application
+- [ ] Réseau Docker isolé par application
 
 ---
 

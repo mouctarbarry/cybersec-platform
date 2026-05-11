@@ -1,8 +1,8 @@
 ---
 title: Incident Response
 category: fondamentaux
-description: Processus de reponse aux incidents — détection, containment, eradication et recovery
-tags: [incident, reponse, forensics, containment, recovery]
+description: Processus de réponse aux incidents — détection, containment, eradication et recovery
+tags: [incident, réponse, forensics, containment, recovery]
 ---
 
 ## Les 6 phases (NIST SP 800-61)
@@ -17,9 +17,9 @@ tags: [incident, reponse, forensics, containment, recovery]
 
 Avant l'incident :
 
-- **Equipe IR** : roles definis, contacts à jour
-- **Playbooks** : procedures pour les scenarios courants
-- **Outils** : SIEM, EDR, forensics toolkit prets
+- **Équipe IR** : rôles définis, contacts à jour
+- **Playbooks** : procédures pour les scénarios courants
+- **Outils** : SIEM, EDR, forensics toolkit prêts
 - **Backups** : testés et vérifiés régulièrement
 - **Communication** : canaux sécurisés, modèles d'emails
 
@@ -31,24 +31,24 @@ Avant l'incident :
 
 | Source | Type d'alerte |
 |--------|---------------|
-| SIEM | Correlations, anomalies |
+| SIEM | Corrélations, anomalies |
 | EDR | Comportement suspect sur endpoints |
 | IDS/IPS | Signatures, trafic anormal |
-| Utilisateurs | Rapports d'activite suspecte |
+| Utilisateurs | Rapports d'activité suspecte |
 | Threat Intel | IOC (Indicators of Compromise) |
 
 ### Triage
 
-| Severite | Critere | Response Time |
+| Sévérité | Critère | Response Time |
 |----------|---------|---------------|
-| **P1 Critical** | Systeme en production compromis | Immediat |
-| **P2 High** | Donnees sensibles exposees | < 1 heure |
-| **P3 Medium** | Activite suspecte confirmee | < 4 heures |
-| **P4 Low** | Alerte a investiguer | < 24 heures |
+| **P1 Critical** | Système en production compromis | Immédiat |
+| **P2 High** | Données sensibles exposées | < 1 heure |
+| **P3 Medium** | Activité suspecte confirmée | < 4 heures |
+| **P4 Low** | Alerte à investiguer | < 24 heures |
 
 ### Collecte d'evidence
 
-<TerminalBlock command="date -u" output="Timestamp UTC de debut d'investigation" />
+<TerminalBlock command="date -u" output="Timestamp UTC de début d'investigation" />
 
 <TerminalBlock command="last -50" output="Historique des connexions" />
 
@@ -56,13 +56,13 @@ Avant l'incident :
 
 <TerminalBlock command="netstat -tulnp" output="Connexions réseau actives" />
 
-<TerminalBlock command="find /tmp /var/tmp -type f -mtime -1" output="Fichiers modifies dans les dernières 24h dans /tmp" />
+<TerminalBlock command="find /tmp /var/tmp -type f -mtime -1" output="Fichiers modifiés dans les dernières 24h dans /tmp" />
 
 ---
 
 ## Phase 3 — Containment
 
-Limiter la propagation sans detruire les preuves.
+Limiter la propagation sans détruire les preuves.
 
 ### Court terme
 
@@ -74,8 +74,8 @@ Limiter la propagation sans detruire les preuves.
 ### Long terme
 
 - Patcher la vulnérabilité exploitée
-- Renforcer les controles d'acces
-- Deployer des regles de détection supplementaires
+- Renforcer les contrôles d'accès
+- Déployer des règles de détection supplémentaires
 
 ---
 
@@ -90,7 +90,7 @@ Supprimer la cause et les artefacts de l'attaque.
 
 <TerminalBlock command="clamscan -r /var/www/" output="Scan antivirus du répertoire web" />
 
-<TerminalBlock command="rkhunter --check" output="Vérifier la presence de rootkits" />
+<TerminalBlock command="rkhunter --check" output="Vérifier la présence de rootkits" />
 
 ---
 
@@ -101,8 +101,8 @@ Restaurer les services en toute sécurité.
 - Restaurer depuis des backups vérifiés
 - Monitorer intensivement les systèmes restaurés
 - Valider l'intégrité des données
-- Retablir l'acces progressivement
-- Vérifier que l'attaquant n'a plus d'acces
+- Rétablir l'accès progressivement
+- Vérifier que l'attaquant n'a plus d'accès
 
 ---
 
@@ -110,20 +110,20 @@ Restaurer les services en toute sécurité.
 
 ### Structure du post-mortem
 
-1. **Timeline** : chronologie detaillee de l'incident
+1. **Timeline** : chronologie détaillée de l'incident
 2. **Root Cause** : analyse des causes profondes (5 Whys)
-3. **Impact** : données affectees, duree, cout
-4. **What went well** : ce qui a fonctionne dans la reponse
-5. **What went wrong** : ce qui n'a pas fonctionne
+3. **Impact** : données affectées, durée, coût
+4. **What went well** : ce qui a fonctionné dans la réponse
+5. **What went wrong** : ce qui n'a pas fonctionné
 6. **Action items** : correctifs avec owners et deadlines
 
-### Questions cles
+### Questions clés
 
-- Comment l'attaquant est-il entre ?
-- Combien de temps est-il reste non détecté ?
-- Quelles données ont ete accedees/exfiltrees ?
-- Nos controles ont-ils fonctionne comme prevu ?
-- Comment prévenir ce type d'incident a l'avenir ?
+- Comment l'attaquant est-il entré ?
+- Combien de temps est-il resté non détecté ?
+- Quelles données ont été accédées/exfiltrées ?
+- Nos contrôles ont-ils fonctionné comme prévu ?
+- Comment prévenir ce type d'incident à l'avenir ?
 
 ---
 
@@ -146,6 +146,6 @@ Restaurer les services en toute sécurité.
 |-------|-------|
 | **Volatility** | Analyse de mémoire RAM |
 | **Autopsy** | Analyse de disque |
-| **YARA** | Détection de malware par regles |
-| **Velociraptor** | Collecte d'artefacts a distance |
+| **YARA** | Détection de malware par règles |
+| **Velociraptor** | Collecte d'artefacts à distance |
 | **TheHive** | Plateforme de gestion d'incidents |

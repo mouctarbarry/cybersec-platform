@@ -7,28 +7,28 @@ tags: [owasp, web, xss, injection, sécurité-web]
 
 ## A01 — Broken Access Control
 
-Acces a des ressources non autorisees.
+Accès à des ressources non autorisées.
 
 **Exemples :**
 - Modification d'URL : `/api/users/123` → `/api/users/456`
-- Acces admin sans verification de role
+- Accès admin sans vérification de rôle
 - IDOR (Insecure Direct Object Reference)
 
 **Protection :**
-- Vérifier les permissions cote serveur a chaque requete
-- Utiliser des tokens opaques au lieu d'IDs sequentiels
+- Vérifier les permissions côté serveur à chaque requête
+- Utiliser des tokens opaques au lieu d'IDs séquentiels
 - Deny by default — tout est interdit sauf autorisation explicite
 
 ---
 
 ## A02 — Cryptographic Failures
 
-Donnees sensibles exposees par manque de chiffrement.
+Données sensibles exposées par manque de chiffrement.
 
 **Exemples :**
 - Mots de passe en clair dans la base de données
 - HTTP au lieu de HTTPS
-- Algorithmes obsoletes (MD5, SHA1, DES)
+- Algorithmes obsolètes (MD5, SHA1, DES)
 
 **Protection :**
 - TLS 1.3 pour tout le trafic
@@ -40,7 +40,7 @@ Donnees sensibles exposees par manque de chiffrement.
 
 ## A03 — Injection
 
-Donnees non validees interpretees comme du code.
+Données non validées interprétées comme du code.
 
 ### SQL Injection
 
@@ -51,7 +51,7 @@ SELECT * FROM users WHERE email = 'input';
 -- Attaque
 ' OR '1'='1' --
 
--- Protection : requetes parametrees
+-- Protection : requêtes paramétrées
 SELECT * FROM users WHERE email = $1;
 ```
 
@@ -68,10 +68,10 @@ os.system("ping " + user_input)
 ```
 
 **Protection :**
-- Requetes parametrees (prepared statements)
-- ORM pour les requetes SQL
-- Validation et sanitisation des entrees
-- Principe du moindre privilege pour les comptes DB
+- Requêtes paramétrées (prepared statements)
+- ORM pour les requêtes SQL
+- Validation et sanitisation des entrées
+- Principe du moindre privilège pour les comptes DB
 
 ---
 
@@ -80,7 +80,7 @@ os.system("ping " + user_input)
 Failles architecturales, pas juste des bugs d'implémentation.
 
 **Protection :**
-- Threat modeling des la conception
+- Threat modeling dès la conception
 - Security requirements dans les user stories
 - Revue de design sécurité avant l'implémentation
 
@@ -94,7 +94,7 @@ Mauvaise configuration des serveurs, frameworks ou cloud.
 - Ports ouverts inutilement
 - Headers de sécurité manquants
 - Pages d'erreur qui exposent des stack traces
-- Comptes par defaut non desactives
+- Comptes par défaut non désactivés
 
 **Headers de sécurité essentiels :**
 
@@ -132,18 +132,18 @@ Failles dans l'authentification et la gestion de session.
 - MFA obligatoire
 - Rate limiting sur les endpoints de login
 - Tokens JWT avec expiration courte
-- Sessions invalidees a la deconnexion
-- Politique de mots de passe robuste (longueur > complexite)
+- Sessions invalidées à la déconnexion
+- Politique de mots de passe robuste (longueur > complexité)
 
 ---
 
 ## A08 — Software and Data Integrity Failures
 
-Code ou données modifies sans verification.
+Code ou données modifiés sans vérification.
 
 **Protection :**
 - Vérification d'intégrité des packages (checksums, signatures)
-- CI/CD securise avec revue de code obligatoire
+- CI/CD sécurisé avec revue de code obligatoire
 - Subresource Integrity (SRI) pour les CDN
 
 ---
@@ -153,23 +153,23 @@ Code ou données modifies sans verification.
 Absence de logs ou monitoring insuffisant.
 
 **A logger :**
-- Tentatives de connexion (succes et echecs)
+- Tentatives de connexion (succès et échecs)
 - Changements de permissions
-- Acces a des données sensibles
+- Accès à des données sensibles
 - Erreurs d'autorisation
 
 **Ne PAS logger :**
 - Mots de passe
 - Tokens d'authentification
-- Donnees personnelles sensibles
+- Données personnelles sensibles
 
 ---
 
 ## A10 — Server-Side Request Forgery (SSRF)
 
-Le serveur effectue des requetes vers des URLs controlees par l'attaquant.
+Le serveur effectue des requêtes vers des URLs contrôlées par l'attaquant.
 
 **Protection :**
-- Valider et filtrer les URLs cote serveur
+- Valider et filtrer les URLs côté serveur
 - Bloquer les requetes vers les réseaux internes (169.254.x.x, 10.x.x.x)
-- Utiliser une allowlist d'URLs autorisees
+- Utiliser une allowlist d'URLs autorisées

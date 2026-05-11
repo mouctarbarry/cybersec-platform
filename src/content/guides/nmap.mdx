@@ -21,15 +21,15 @@ tags: [nmap, scan, ports, reconnaissance, pentest]
 
 | Flag | Type | Description |
 |------|------|-------------|
-| `-sS` | SYN scan | Rapide, discret (defaut avec root) |
-| `-sT` | Connect scan | Connexion complete TCP |
+| `-sS` | SYN scan | Rapide, discret (défaut avec root) |
+| `-sT` | Connect scan | Connexion complète TCP |
 | `-sU` | UDP scan | Scan des ports UDP |
 | `-sV` | Version scan | Détection des versions de services |
-| `-sC` | Script scan | Scripts NSE par defaut |
+| `-sC` | Script scan | Scripts NSE par défaut |
 | `-O` | OS détection | Détection du système d'exploitation |
 | `-A` | Aggressive | OS + version + scripts + traceroute |
 
-<TerminalBlock command="nmap -sS -sV -O 192.168.1.0/24" output="SYN scan avec détection de version et OS sur tout le sous-reseau" />
+<TerminalBlock command="nmap -sS -sV -O 192.168.1.0/24" output="SYN scan avec détection de version et OS sur tout le sous-réseau" />
 
 ---
 
@@ -46,20 +46,20 @@ tags: [nmap, scan, ports, reconnaissance, pentest]
 
 Nmap Scripting Engine — scripts Lua pour l'énumération et la détection de vulnérabilités.
 
-<TerminalBlock command="nmap --script=default 192.168.1.1" output="Scripts par defaut (equivalent de -sC)" />
+<TerminalBlock command="nmap --script=default 192.168.1.1" output="Scripts par défaut (equivalent de -sC)" />
 
 <TerminalBlock command="nmap --script=vuln 192.168.1.1" output="Scripts de détection de vulnérabilités" />
 
 <TerminalBlock command="nmap --script=http-enum 192.168.1.1" output="Énumération des répertoires web" />
 
-<TerminalBlock command="nmap --script=ssl-enum-ciphers -p 443 192.168.1.1" output="Enumerer les ciphers SSL/TLS supportes" />
+<TerminalBlock command="nmap --script=ssl-enum-ciphers -p 443 192.168.1.1" output="Enumérer les ciphers SSL/TLS supportés" />
 
 ### Scripts utiles
 
 | Script | Usage |
 |--------|-------|
 | `http-enum` | Énumération de répertoires et fichiers web |
-| `ssl-enum-ciphers` | Ciphers SSL/TLS supportes |
+| `ssl-enum-ciphers` | Ciphers SSL/TLS supportés |
 | `ssh-auth-methods` | Méthodes d'authentification SSH |
 | `dns-brute` | Brute force de sous-domaines |
 | `smb-enum-shares` | Partages SMB |
@@ -67,22 +67,22 @@ Nmap Scripting Engine — scripts Lua pour l'énumération et la détection de v
 
 ---
 
-## Techniques d'evasion
+## Techniques d'évasion
 
-<TerminalBlock command="nmap -T2 192.168.1.1" output="Scan lent pour eviter la détection (T0-T5)" />
+<TerminalBlock command="nmap -T2 192.168.1.1" output="Scan lent pour éviter la détection (T0-T5)" />
 
 <TerminalBlock command="nmap -f 192.168.1.1" output="Fragmentation des paquets" />
 
-<TerminalBlock command="nmap -D RND:5 192.168.1.1" output="Scan avec 5 decoys aleatoires" />
+<TerminalBlock command="nmap -D RND:5 192.168.1.1" output="Scan avec 5 decoys aléatoires" />
 
 | Timing | Nom | Usage |
 |--------|-----|-------|
-| `-T0` | Paranoid | Evasion IDS, tres lent |
-| `-T1` | Sneaky | Evasion IDS |
+| `-T0` | Paranoid | Évasion IDS, très lent |
+| `-T1` | Sneaky | Évasion IDS |
 | `-T2` | Polite | Réduit la charge réseau |
-| `-T3` | Normal | Defaut |
+| `-T3` | Normal | Défaut |
 | `-T4` | Aggressive | Réseaux rapides |
-| `-T5` | Insane | Tres rapide, risque de perte |
+| `-T5` | Insane | Très rapide, risque de perte |
 
 ---
 
@@ -90,11 +90,11 @@ Nmap Scripting Engine — scripts Lua pour l'énumération et la détection de v
 
 <TerminalBlock command="nmap -oN scan.txt 192.168.1.1" output="Sortie en format normal" />
 
-<TerminalBlock command="nmap -oX scan.xml 192.168.1.1" output="Sortie en XML (pour integration)" />
+<TerminalBlock command="nmap -oX scan.xml 192.168.1.1" output="Sortie en XML (pour intégration)" />
 
 <TerminalBlock command="nmap -oG scan.gnmap 192.168.1.1" output="Sortie grepable" />
 
-<TerminalBlock command="nmap -oA scan 192.168.1.1" output="Les 3 formats en meme temps" />
+<TerminalBlock command="nmap -oA scan 192.168.1.1" output="Les 3 formats en même temps" />
 
 ---
 
@@ -106,8 +106,8 @@ Nmap Scripting Engine — scripts Lua pour l'énumération et la détection de v
 
 ## Commandes utiles
 
-<TerminalBlock command="nmap -sn 192.168.1.0/24" output="Ping sweep — decouvrir les hotes actifs sans scanner les ports" />
+<TerminalBlock command="nmap -sn 192.168.1.0/24" output="Ping sweep — découvrir les hôtes actifs sans scanner les ports" />
 
-<TerminalBlock command="nmap --top-ports 100 192.168.1.0/24" output="Scanner les 100 ports les plus courants sur un sous-reseau" />
+<TerminalBlock command="nmap --top-ports 100 192.168.1.0/24" output="Scanner les 100 ports les plus courants sur un sous-réseau" />
 
-<TerminalBlock command="nmap -Pn 192.168.1.1" output="Scanner sans ping (quand ICMP est bloque)" />
+<TerminalBlock command="nmap -Pn 192.168.1.1" output="Scanner sans ping (quand ICMP est bloqué)" />

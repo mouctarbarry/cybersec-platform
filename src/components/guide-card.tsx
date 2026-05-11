@@ -11,9 +11,12 @@ export function GuideCard({ guide }: { guide: GuideMeta }) {
       href={`/guides/${guide.slug}`}
       className="group block rounded-xl border border-border bg-card p-6 transition-all duration-200 hover:-translate-y-1 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5"
     >
-      <span className="mb-2 inline-block rounded-md bg-secondary px-2 py-0.5 text-xs font-medium text-muted-foreground">
-        {category.label}
-      </span>
+      <div className="mb-2 flex items-center gap-2">
+        <span className={`h-2.5 w-2.5 shrink-0 rounded-full ${category.color}`} />
+        <span className="rounded-md bg-secondary px-2 py-0.5 text-xs font-medium text-muted-foreground">
+          {category.label}
+        </span>
+      </div>
 
       <h3 className="mb-2 font-mono text-lg font-bold tracking-tight group-hover:text-primary">
         {guide.title}

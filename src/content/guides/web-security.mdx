@@ -1,5 +1,5 @@
 ---
-title: Sécurité Web avancee
+title: Sécurité Web avancée
 category: web
 description: XSS, CSRF, CSP, cookies sécurisés et protections web modernes
 tags: [xss, csrf, csp, cookies, headers, sécurité-web]
@@ -13,9 +13,9 @@ Injection de code JavaScript malveillant dans une page web.
 
 | Type | Persistance | Vecteur |
 |------|-------------|---------|
-| **Reflected** | Non | URL, parametres GET |
+| **Reflected** | Non | URL, paramètres GET |
 | **Stored** | Oui | Base de données, commentaires |
-| **DOM-based** | Non | Manipulation du DOM cote client |
+| **DOM-based** | Non | Manipulation du DOM côté client |
 
 ### Exemple d'attaque
 
@@ -29,27 +29,27 @@ Injection de code JavaScript malveillant dans une page web.
 
 ### Protection
 
-- **Echappement** : encoder les sorties HTML (`&lt;` au lieu de `<`)
+- **Échappement** : encoder les sorties HTML (`&lt;` au lieu de `<`)
 - **CSP** : Content Security Policy qui bloque les scripts inline
-- **Frameworks** : React, Vue, Angular echappent automatiquement
+- **Frameworks** : React, Vue, Angular échappent automatiquement
 - **HttpOnly** : cookies inaccessibles via JavaScript
 
 ---
 
 ## Cross-Site Request Forgery (CSRF)
 
-Forcer un utilisateur authentifie a executer une action a son insu.
+Forcer un utilisateur authentifié à exécuter une action à son insu.
 
 ### Exemple
 
 ```html
-<!-- Sur evil.com, l'image declenche un transfert -->
+<!-- Sur evil.com, l'image déclenche un transfert -->
 <img src="https://bank.com/transfer?to=attacker&amount=10000" />
 ```
 
 ### Protection
 
-- **Token CSRF** : token unique par session, verifie cote serveur
+- **Token CSRF** : token unique par session, vérifié côté serveur
 - **SameSite cookies** : `SameSite=Strict` ou `SameSite=Lax`
 - **Double Submit Cookie** : token dans le cookie ET dans le formulaire
 - **Vérifier l'en-tete Origin/Referer**
@@ -58,7 +58,7 @@ Forcer un utilisateur authentifie a executer une action a son insu.
 
 ## Content Security Policy (CSP)
 
-Politique qui controle les sources de contenu autorisees.
+Politique qui contrôle les sources de contenu autorisées.
 
 ```
 Content-Security-Policy:
@@ -73,14 +73,14 @@ Content-Security-Policy:
   form-action 'self';
 ```
 
-### Directives cles
+### Directives clés
 
-| Directive | Controle |
+| Directive | Contrôle |
 |-----------|----------|
-| `default-src` | Source par defaut pour tout |
-| `script-src` | Sources JavaScript autorisees |
-| `style-src` | Sources CSS autorisees |
-| `img-src` | Sources d'images autorisees |
+| `default-src` | Source par défaut pour tout |
+| `script-src` | Sources JavaScript autorisées |
+| `style-src` | Sources CSS autorisées |
+| `img-src` | Sources d'images autorisées |
 | `connect-src` | URLs pour fetch, XHR, WebSocket |
 | `frame-ancestors` | Qui peut embarquer la page (remplace X-Frame-Options) |
 
@@ -91,7 +91,7 @@ Content-Security-Policy:
 ```
 Set-Cookie: session=abc123;
   Secure;           // HTTPS uniquement
-  HttpOnly;         // Pas d'acces JavaScript
+  HttpOnly;         // Pas d'accès JavaScript
   SameSite=Lax;     // Protection CSRF
   Path=/;
   Max-Age=3600;     // Expiration 1h
@@ -100,11 +100,11 @@ Set-Cookie: session=abc123;
 
 | Attribut | Effet |
 |----------|-------|
-| `Secure` | Cookie envoye uniquement sur HTTPS |
+| `Secure` | Cookie envoyé uniquement sur HTTPS |
 | `HttpOnly` | Inaccessible via `document.cookie` |
 | `SameSite=Strict` | Jamais envoye en cross-site |
-| `SameSite=Lax` | Envoye en navigation top-level GET |
-| `SameSite=None` | Toujours envoye (requiert `Secure`) |
+| `SameSite=Lax` | Envoyé en navigation top-level GET |
+| `SameSite=None` | Toujours envoyé (requiert `Secure`) |
 
 ---
 
@@ -118,16 +118,16 @@ Access-Control-Allow-Credentials: true
 Access-Control-Max-Age: 86400
 ```
 
-**Regles :**
+**Règles :**
 - Ne jamais utiliser `Access-Control-Allow-Origin: *` avec credentials
-- Valider l'origin contre une allowlist cote serveur
-- Preflight (OPTIONS) pour les requetes non-simple
+- Valider l'origin contre une allowlist côté serveur
+- Preflight (OPTIONS) pour les requêtes non-simple
 
 ---
 
 ## Subresource Integrity (SRI)
 
-Vérifier que les scripts tiers n'ont pas ete modifies.
+Vérifier que les scripts tiers n'ont pas été modifiés.
 
 ```html
 <script
@@ -137,4 +137,4 @@ Vérifier que les scripts tiers n'ont pas ete modifies.
 </script>
 ```
 
-<TerminalBlock command="shasum -a 384 lib.js | xxd -r -p | base64" output="Generer le hash SRI d'un fichier" />
+<TerminalBlock command="shasum -a 384 lib.js | xxd -r -p | base64" output="Générer le hash SRI d'un fichier" />

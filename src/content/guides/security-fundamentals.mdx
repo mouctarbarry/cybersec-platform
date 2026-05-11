@@ -1,8 +1,8 @@
 ---
 title: Fondamentaux de la sécurité
 category: fondamentaux
-description: CIA Triad, modèles de menaces, defense en profondeur et principes fondamentaux de la cybersécurité
-tags: [cia, sécurité, menaces, defense-en-profondeur]
+description: CIA Triad, modèles de menaces, défense en profondeur et principes fondamentaux de la cybersécurité
+tags: [cia, sécurité, menaces, défense-en-profondeur]
 ---
 
 ## La triade CIA
@@ -11,30 +11,30 @@ Les trois piliers de la sécurité de l'information :
 
 | Pilier | Objectif | Menaces |
 |--------|----------|---------|
-| **Confidentialite** | Seules les personnes autorisees accedent aux données | Interception, fuite de données, acces non autorise |
-| **Integrite** | Les données ne sont pas modifiees sans autorisation | Falsification, corruption, injection |
+| **Confidentialité** | Seules les personnes autorisées accèdent aux données | Interception, fuite de données, accès non autorisé |
+| **Intégrité** | Les données ne sont pas modifiées sans autorisation | Falsification, corruption, injection |
 | **Disponibilite** | Les services restent accessibles | DDoS, panne, ransomware |
 
 ---
 
-## Defense en profondeur
+## Défense en profondeur
 
-Superposer plusieurs couches de sécurité pour qu'un echec unique ne compromette pas le système.
+Superposer plusieurs couches de sécurité pour qu'un échec unique ne compromette pas le système.
 
 ```
 ┌─────────────────────────────────────┐
 │           Politiques &              │
-│           Procedures                │
+│           Procédures                │
 │  ┌───────────────────────────────┐  │
 │  │       Sécurité physique       │  │
 │  │  ┌─────────────────────────┐  │  │
-│  │  │     Perimetre réseau    │  │  │
+│  │  │     Périmètre réseau    │  │  │
 │  │  │  ┌───────────────────┐  │  │  │
 │  │  │  │  Réseau interne   │  │  │  │
 │  │  │  │  ┌─────────────┐  │  │  │  │
-│  │  │  │  │    Hote      │  │  │  │  │
+│  │  │  │  │    Hôte      │  │  │  │  │
 │  │  │  │  │  ┌────────┐  │  │  │  │  │
-│  │  │  │  │  │ Donnees │  │  │  │  │  │
+│  │  │  │  │  │ Données │  │  │  │  │  │
 │  │  │  │  │  └────────┘  │  │  │  │  │
 │  │  │  │  └─────────────┘  │  │  │  │
 │  │  │  └───────────────────┘  │  │  │
@@ -47,28 +47,28 @@ Superposer plusieurs couches de sécurité pour qu'un echec unique ne compromett
 
 ## Principe du moindre privilege
 
-Chaque utilisateur, processus ou service ne doit avoir que les permissions strictement necessaires.
+Chaque utilisateur, processus ou service ne doit avoir que les permissions strictement nécessaires.
 
-- **Utilisateurs** : pas d'acces admin par defaut
+- **Utilisateurs** : pas d'accès admin par défaut
 - **Applications** : droits minimaux sur la base de données
-- **Conteneurs** : pas de `root`, capabilities limitees
+- **Conteneurs** : pas de `root`, capabilities limitées
 - **IAM** : politiques spécifiques, pas de `*` wildcards
 
 ---
 
 ## Zero Trust
 
-*"Ne jamais faire confiance, toujours verifier."*
+*"Ne jamais faire confiance, toujours vérifier."*
 
 | Principe | Application |
 |----------|-------------|
-| Vérifier explicitement | Authentification forte a chaque requete |
-| Moindre privilege | Acces juste-a-temps, juste-assez |
+| Vérifier explicitement | Authentification forte à chaque requête |
+| Moindre privilège | Accès juste-à-temps, juste-assez |
 | Presumer la compromission | Segmentation, chiffrement, monitoring |
 
 ---
 
-## Modeles de menaces
+## Modèles de menaces
 
 ### STRIDE (Microsoft)
 
@@ -77,9 +77,9 @@ Chaque utilisateur, processus ou service ne doit avoir que les permissions stric
 | **S**poofing | Usurpation d'identité | Authentification forte, MFA |
 | **T**ampering | Modification de données | Signatures, checksums, intégrité |
 | **R**epudiation | Nier une action | Journalisation, audit trail |
-| **I**nformation disclosure | Fuite de données | Chiffrement, controle d'acces |
+| **I**nformation disclosure | Fuite de données | Chiffrement, contrôle d'accès |
 | **D**enial of service | Rendre un service indisponible | Rate limiting, CDN, auto-scaling |
-| **E**levation of privilege | Obtenir des droits superieurs | Moindre privilege, sandboxing |
+| **E**levation of privilege | Obtenir des droits supérieurs | Moindre privilège, sandboxing |
 
 ---
 
@@ -87,11 +87,11 @@ Chaque utilisateur, processus ou service ne doit avoir que les permissions stric
 
 | Type | Motivation | Ressources | Exemple |
 |------|------------|------------|---------|
-| Script kiddie | Curiosite, reputation | Faibles | Outils automatises |
-| Hacktiviste | Ideologie | Moyennes | Anonymous |
-| Cybercriminel | Profit financier | Elevees | Ransomware gangs |
-| APT (Etat) | Espionnage, sabotage | Tres elevees | Nation-state actors |
-| Insider | Vengeance, profit | Variables | Employe malveillant |
+| Script kiddie | Curiosité, réputation | Faibles | Outils automatisés |
+| Hacktiviste | Idéologie | Moyennes | Anonymous |
+| Cybercriminel | Profit financier | Élevées | Ransomware gangs |
+| APT (Etat) | Espionnage, sabotage | Très élevées | Nation-state actors |
+| Insider | Vengeance, profit | Variables | Employé malveillant |
 
 ---
 
@@ -100,6 +100,6 @@ Chaque utilisateur, processus ou service ne doit avoir que les permissions stric
 - **MFA partout** : authentification multi-facteurs obligatoire
 - **Chiffrement** : au repos et en transit (TLS 1.3)
 - **Patches** : mises à jour de sécurité automatiques
-- **Backups** : sauvegardes testees, hors ligne, chiffrees
+- **Backups** : sauvegardes testées, hors ligne, chiffrées
 - **Monitoring** : SIEM, alertes, audit logs
 - **Formation** : sensibilisation des utilisateurs

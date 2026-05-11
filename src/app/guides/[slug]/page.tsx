@@ -80,7 +80,7 @@ export default async function GuidePage({ params }: PageProps) {
                 rehypePlugins: [
                   [
                     rehypePrettyCode,
-                    { theme: { dark: "one-dark-pro", light: "github-light" }, keepBackground: true },
+                    { theme: { dark: "one-dark-pro", light: "github-light" }, keepBackground: false },
                   ],
                 ],
               },

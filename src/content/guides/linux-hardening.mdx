@@ -1,18 +1,18 @@
 ---
 title: Linux Hardening
 category: hardening
-description: Securisation d'un serveur Linux — SSH, utilisateurs, permissions, audit et bonnes pratiques
+description: Sécurisation d'un serveur Linux — SSH, utilisateurs, permissions, audit et bonnes pratiques
 tags: [linux, hardening, ssh, permissions, audit, sécurité]
 ---
 
 ## SSH Hardening
 
-Editer `/etc/ssh/sshd_config` :
+Éditer `/etc/ssh/sshd_config` :
 
 ```
-Port 2222                          # Changer le port par defaut
+Port 2222                          # Changer le port par défaut
 PermitRootLogin no                 # Interdire le login root
-PasswordAuthentication no          # Cles SSH uniquement
+PasswordAuthentication no          # Clés SSH uniquement
 PubkeyAuthentication yes
 MaxAuthTries 3
 ClientAliveInterval 300
@@ -26,9 +26,9 @@ X11Forwarding no
 
 <TerminalBlock command="systemctl restart sshd" />
 
-### Cles SSH
+### Clés SSH
 
-<TerminalBlock command="ssh-keygen -t ed25519 -C 'serveur-prod'" output="Generer une clé Ed25519" />
+<TerminalBlock command="ssh-keygen -t ed25519 -C 'serveur-prod'" output="Générer une clé Ed25519" />
 
 <TerminalBlock command="ssh-copy-id -i ~/.ssh/id_ed25519.pub user@server" output="Copier la clé publique sur le serveur" />
 
@@ -36,24 +36,24 @@ X11Forwarding no
 
 ## Gestion des utilisateurs
 
-<TerminalBlock command="useradd -m -s /bin/bash -G sudo deploy" output="Creer un utilisateur avec acces sudo" />
+<TerminalBlock command="useradd -m -s /bin/bash -G sudo deploy" output="Créer un utilisateur avec accès sudo" />
 
 <TerminalBlock command="passwd -l root" output="Verrouiller le compte root" />
 
 <TerminalBlock command="chage -l deploy" output="Voir la politique de mots de passe" />
 
-<TerminalBlock command="chage -M 90 -W 14 deploy" output="Expiration du mot de passe a 90 jours, avertissement 14 jours avant" />
+<TerminalBlock command="chage -M 90 -W 14 deploy" output="Expiration du mot de passe à 90 jours, avertissement 14 jours avant" />
 
-### Sudo securise
+### Sudo sécurisé
 
-Editer avec `visudo` :
+Éditer avec `visudo` :
 
 ```
 # Logs des commandes sudo
 Defaults    logfile="/var/log/sudo.log"
 Defaults    log_input, log_output
 
-# Timeout sudo (redemander le mot de passe apres 5 min)
+# Timeout sudo (redemander le mot de passe après 5 min)
 Defaults    timestamp_timeout=5
 
 # Pas de sudo sans mot de passe
@@ -65,9 +65,9 @@ deploy ALL=(ALL) ALL
 ## Permissions de fichiers
 
 ```
-chmod 600 ~/.ssh/authorized_keys    # Lecture/ecriture owner uniquement
-chmod 700 ~/.ssh                    # Acces owner uniquement
-chmod 644 /etc/passwd               # Lecture pour tous, ecriture owner
+chmod 600 ~/.ssh/authorized_keys    # Lecture/écriture owner uniquement
+chmod 700 ~/.ssh                    # Accès owner uniquement
+chmod 644 /etc/passwd               # Lecture pour tous, écriture owner
 chmod 640 /etc/shadow               # Lecture owner+group, pas others
 ```
 
@@ -119,7 +119,7 @@ Unattended-Upgrade::Automatic-Reboot-Time "03:00";
 
 <TerminalBlock command="lastb -20" output="20 dernières tentatives échouées" />
 
-<TerminalBlock command="journalctl -u sshd --since '1 hour ago'" output="Logs SSH de la derniere heure" />
+<TerminalBlock command="journalctl -u sshd --since '1 hour ago'" output="Logs SSH de la dernière heure" />
 
 ### Auditd
 
@@ -138,12 +138,12 @@ Unattended-Upgrade::Automatic-Reboot-Time "03:00";
 
 ---
 
-## Securisation du kernel
+## Sécurisation du kernel
 
-Editer `/etc/sysctl.d/99-security.conf` :
+Éditer `/etc/sysctl.d/99-security.conf` :
 
 ```
-# Desactiver le forwarding IP
+# Désactiver le forwarding IP
 net.ipv4.ip_forward = 0
 
 # Ignorer les pings broadcast
@@ -156,7 +156,7 @@ net.ipv4.tcp_syncookies = 1
 net.ipv4.conf.all.accept_redirects = 0
 net.ipv6.conf.all.accept_redirects = 0
 
-# Desactiver le source routing
+# Désactiver le source routing
 net.ipv4.conf.all.accept_source_route = 0
 
 # Logging des paquets martiens
@@ -166,17 +166,17 @@ net.ipv4.conf.all.log_martians = 1
 kernel.randomize_va_space = 2
 ```
 
-<TerminalBlock command="sysctl -p /etc/sysctl.d/99-security.conf" output="Appliquer les parametres" />
+<TerminalBlock command="sysctl -p /etc/sysctl.d/99-security.conf" output="Appliquer les paramètres" />
 
 ---
 
-## Checklist de securisation
+## Checklist de sécurisation
 
-- [ ] SSH : cles uniquement, port change, root interdit
+- [ ] SSH : clés uniquement, port changé, root interdit
 - [ ] Firewall : default deny, ports minimaux ouverts
 - [ ] Mises à jour : automatiques pour les patches de sécurité
-- [ ] Utilisateurs : pas de comptes inutiles, sudo audite
+- [ ] Utilisateurs : pas de comptes inutiles, sudo audité
 - [ ] Permissions : pas de SUID/SGID inutiles
-- [ ] Logs : centralises, auditd active
+- [ ] Logs : centralisés, auditd activé
 - [ ] Kernel : sysctl durci
-- [ ] Services : desactiver ceux qui ne sont pas necessaires
+- [ ] Services : désactiver ceux qui ne sont pas nécessaires

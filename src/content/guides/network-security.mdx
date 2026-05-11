@@ -9,13 +9,13 @@ tags: [firewall, ids, ips, vpn, segmentation, réseau]
 
 ### iptables / nftables
 
-<TerminalBlock command="iptables -L -n -v" output="Lister toutes les regles du firewall" />
+<TerminalBlock command="iptables -L -n -v" output="Lister toutes les règles du firewall" />
 
 <TerminalBlock command="iptables -A INPUT -p tcp --dport 22 -s 10.0.0.0/8 -j ACCEPT" output="Autoriser SSH depuis le réseau interne" />
 
-<TerminalBlock command="iptables -A INPUT -p tcp --dport 22 -j DROP" output="Bloquer SSH depuis l'exterieur" />
+<TerminalBlock command="iptables -A INPUT -p tcp --dport 22 -j DROP" output="Bloquer SSH depuis l'extérieur" />
 
-<TerminalBlock command="iptables -P INPUT DROP" output="Politique par defaut : tout bloquer" />
+<TerminalBlock command="iptables -P INPUT DROP" output="Politique par défaut : tout bloquer" />
 
 ### UFW (Ubuntu)
 
@@ -27,16 +27,16 @@ tags: [firewall, ids, ips, vpn, segmentation, réseau]
 
 <TerminalBlock command="ufw status verbose" />
 
-### Regles essentielles
+### Règles essentielles
 
 | Port | Service | Recommandation |
 |------|---------|---------------|
-| 22 | SSH | Limiter aux IPs autorisees |
+| 22 | SSH | Limiter aux IPs autorisées |
 | 80 | HTTP | Rediriger vers 443 |
 | 443 | HTTPS | Ouvert |
-| 3306 | MySQL | Ferme (acces local uniquement) |
-| 5432 | PostgreSQL | Ferme (acces local uniquement) |
-| 6379 | Redis | Ferme (pas d'auth par defaut) |
+| 3306 | MySQL | Fermé (accès local uniquement) |
+| 5432 | PostgreSQL | Fermé (accès local uniquement) |
+| 6379 | Redis | Fermé (pas d'auth par défaut) |
 
 ---
 
@@ -44,15 +44,15 @@ tags: [firewall, ids, ips, vpn, segmentation, réseau]
 
 | | IDS | IPS |
 |---|-----|-----|
-| Mode | Passif (détection) | Actif (prevention) |
+| Mode | Passif (détection) | Actif (prévention) |
 | Action | Alerte | Bloque le trafic |
 | Position | Copie du trafic (TAP/SPAN) | En ligne (inline) |
-| Risque | Faux negatifs | Faux positifs (bloque du trafic legitime) |
+| Risque | Faux négatifs | Faux positifs (bloque du trafic légitime) |
 
 ### Outils
 
 - **Suricata** : IDS/IPS open source, haute performance
-- **Snort** : Classique, large communaute de regles
+- **Snort** : Classique, large communauté de règles
 - **OSSEC** : Host-based IDS (HIDS)
 - **Fail2ban** : Protection contre le brute force
 
@@ -84,7 +84,7 @@ tags: [firewall, ids, ips, vpn, segmentation, réseau]
 
 **Principes :**
 - Isoler les services publics dans une DMZ
-- Bases de données dans un réseau prive
+- Bases de données dans un réseau privé
 - Communication inter-zones via firewall uniquement
 - VLANs pour la segmentation logique
 
@@ -108,7 +108,7 @@ tags: [firewall, ids, ips, vpn, segmentation, réseau]
 
 <TerminalBlock command="tcpdump -i eth0 -w capture.pcap" output="Sauvegarder une capture pour Wireshark" />
 
-<TerminalBlock command="ss -tlnp" output="Ports en ecoute et processus associes" />
+<TerminalBlock command="ss -tlnp" output="Ports en écoute et processus associés" />
 
 <TerminalBlock command="netstat -an | grep ESTABLISHED" output="Connexions actives" />
 
@@ -117,8 +117,8 @@ tags: [firewall, ids, ips, vpn, segmentation, réseau]
 ## DNS Security
 
 - **DNSSEC** : signatures cryptographiques sur les enregistrements DNS
-- **DoH** (DNS over HTTPS) : chiffrement des requetes DNS
-- **DoT** (DNS over TLS) : alternative a DoH
+- **DoH** (DNS over HTTPS) : chiffrement des requêtes DNS
+- **DoT** (DNS over TLS) : alternative à DoH
 
 <TerminalBlock command="dig +dnssec example.com" output="Vérifier les signatures DNSSEC" />
 
@@ -130,4 +130,4 @@ tags: [firewall, ids, ips, vpn, segmentation, réseau]
 - **Segmentation** : isoler les zones par niveau de confiance
 - **Chiffrement** : TLS pour tout le trafic applicatif
 - **Monitoring** : logs de flux, IDS, alerting
-- **Rotation** : changer les cles VPN et certificats régulièrement
+- **Rotation** : changer les clés VPN et certificats régulièrement

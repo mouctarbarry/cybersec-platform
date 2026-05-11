@@ -1,41 +1,41 @@
 ---
 title: Cryptographie
 category: cryptographie
-description: Chiffrement symetrique, asymetrique, hashing, signatures numeriques et PKI
+description: Chiffrement symétrique, asymétrique, hashing, signatures numériques et PKI
 tags: [chiffrement, hashing, rsa, aes, tls, certificats]
 ---
 
-## Chiffrement symetrique
+## Chiffrement symétrique
 
 Une seule clé pour chiffrer et déchiffrer.
 
 | Algorithme | Taille de clé | Usage |
 |------------|--------------|-------|
 | **AES-256-GCM** | 256 bits | Standard actuel, chiffrement au repos |
-| **ChaCha20-Poly1305** | 256 bits | Alternative a AES, mobile |
-| ~~DES~~ | 56 bits | Obsolete — ne pas utiliser |
-| ~~3DES~~ | 168 bits | Deprecie — ne pas utiliser |
+| **ChaCha20-Poly1305** | 256 bits | Alternative à AES, mobile |
+| ~~DES~~ | 56 bits | Obsolète — ne pas utiliser |
+| ~~3DES~~ | 168 bits | Déprécié — ne pas utiliser |
 
 <TerminalBlock command="openssl enc -aes-256-cbc -salt -in fichier.txt -out fichier.enc" output="Chiffrer un fichier avec AES-256" />
 
-<TerminalBlock command="openssl enc -d -aes-256-cbc -in fichier.enc -out fichier.txt" output="Dechiffrer" />
+<TerminalBlock command="openssl enc -d -aes-256-cbc -in fichier.enc -out fichier.txt" output="Déchiffrer" />
 
 ---
 
-## Chiffrement asymetrique
+## Chiffrement asymétrique
 
-Paire de cles : publique (chiffrer) et privée (déchiffrer).
+Paire de clés : publique (chiffrer) et privée (déchiffrer).
 
-| Algorithme | Usage | Taille recommandee |
+| Algorithme | Usage | Taille recommandée |
 |------------|-------|--------------------|
 | **RSA** | Chiffrement, signatures | 4096 bits |
 | **ECDSA** | Signatures (plus rapide) | P-256 ou P-384 |
 | **Ed25519** | Signatures SSH/TLS | 256 bits |
-| **X25519** | Echange de cles | 256 bits |
+| **X25519** | Échange de clés | 256 bits |
 
-<TerminalBlock command="ssh-keygen -t ed25519 -C 'email@example.com'" output="Generer une clé SSH Ed25519" />
+<TerminalBlock command="ssh-keygen -t ed25519 -C 'email@example.com'" output="Générer une clé SSH Ed25519" />
 
-<TerminalBlock command="openssl genrsa -out private.pem 4096" output="Generer une clé RSA 4096 bits" />
+<TerminalBlock command="openssl genrsa -out private.pem 4096" output="Générer une clé RSA 4096 bits" />
 
 <TerminalBlock command="openssl rsa -in private.pem -pubout -out public.pem" output="Extraire la clé publique" />
 
@@ -43,12 +43,12 @@ Paire de cles : publique (chiffrer) et privée (déchiffrer).
 
 ## Hashing
 
-Fonction a sens unique : impossible de retrouver l'entree a partir du hash.
+Fonction à sens unique : impossible de retrouver l'entrée à partir du hash.
 
 | Algorithme | Taille | Usage |
 |------------|--------|-------|
 | **SHA-256** | 256 bits | Vérification d'intégrité |
-| **SHA-3** | Variable | Nouvelle generation |
+| **SHA-3** | Variable | Nouvelle génération |
 | **BLAKE3** | 256 bits | Rapide, moderne |
 | ~~MD5~~ | 128 bits | Casse — ne pas utiliser |
 | ~~SHA-1~~ | 160 bits | Casse — ne pas utiliser |
@@ -57,28 +57,28 @@ Fonction a sens unique : impossible de retrouver l'entree a partir du hash.
 
 ### Hashing de mots de passe
 
-Les fonctions de hashing classiques (SHA-256) sont trop rapides pour les mots de passe. Utiliser des fonctions conçues pour etre lentes :
+Les fonctions de hashing classiques (SHA-256) sont trop rapides pour les mots de passe. Utiliser des fonctions conçues pour être lentes :
 
 | Algorithme | Recommandation |
 |------------|---------------|
-| **Argon2id** | Recommande (winner PHC) |
-| **bcrypt** | Bon choix, largement supporte |
+| **Argon2id** | Recommandé (winner PHC) |
+| **bcrypt** | Bon choix, largement supporté |
 | **scrypt** | Alternative solide |
 | ~~PBKDF2~~ | Acceptable si pas d'alternative |
 
 ---
 
-## Signatures numeriques
+## Signatures numériques
 
-Prouver l'authenticite et l'intégrité d'un message.
+Prouver l'authenticité et l'intégrité d'un message.
 
 ```
 1. Alice hash le message → H
 2. Alice chiffre H avec sa clé privée → Signature
 3. Alice envoie message + signature
 4. Bob déchiffre la signature avec la clé publique d'Alice → H'
-5. Bob hash le message recu → H''
-6. Si H' == H'' → message authentique et integre
+5. Bob hash le message reçu → H''
+6. Si H' == H'' → message authentique et intègre
 ```
 
 <TerminalBlock command="openssl dgst -sha256 -sign private.pem -out signature.bin message.txt" output="Signer un fichier" />
@@ -106,19 +106,19 @@ Client                              Server
 
 - **TLS 1.3** : 1-RTT handshake, forward secrecy obligatoire
 - **TLS 1.2** : acceptable mais 2-RTT
-- ~~TLS 1.0/1.1~~ : deprecie, a desactiver
-- ~~SSL~~ : obsolete depuis 2015
+- ~~TLS 1.0/1.1~~ : déprécié, à désactiver
+- ~~SSL~~ : obsolète depuis 2015
 
 ---
 
 ## PKI et certificats
 
-### Chaine de confiance
+### Chaîne de confiance
 
 ```
-Root CA (auto-signe, stocke dans l'OS/navigateur)
-  └── Intermediate CA (signe par Root CA)
-        └── Certificat serveur (signe par Intermediate CA)
+Root CA (auto-signé, stocké dans l'OS/navigateur)
+  └── Intermediate CA (signé par Root CA)
+        └── Certificat serveur (signé par Intermediate CA)
 ```
 
 <TerminalBlock command="openssl x509 -in cert.pem -text -noout" output="Examiner un certificat" />
@@ -133,9 +133,9 @@ Root CA (auto-signe, stocke dans l'OS/navigateur)
 
 ## Bonnes pratiques
 
-- **AES-256-GCM** ou **ChaCha20** pour le chiffrement symetrique
-- **Ed25519** pour les cles SSH
+- **AES-256-GCM** ou **ChaCha20** pour le chiffrement symétrique
+- **Ed25519** pour les clés SSH
 - **Argon2id** pour les mots de passe
 - **TLS 1.3** minimum pour le trafic réseau
-- Ne jamais implementer sa propre cryptographie
-- Rotation reguliere des cles et certificats
+- Ne jamais implémenter sa propre cryptographie
+- Rotation régulière des clés et certificats
