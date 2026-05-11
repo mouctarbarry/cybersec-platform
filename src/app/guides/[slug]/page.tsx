@@ -56,7 +56,7 @@ export default async function GuidePage({ params }: PageProps) {
           <span className="mb-2 inline-block rounded-md bg-secondary px-2.5 py-1 text-xs font-medium text-muted-foreground">
             {category.label}
           </span>
-          <h1 className="mb-2 font-mono text-4xl font-bold">{guide.title}</h1>
+          <h1 className="mb-2 font-heading text-4xl font-bold">{guide.title}</h1>
           <p className="text-lg text-muted-foreground">{guide.description}</p>
           <div className="mt-3 flex flex-wrap gap-1">
             {guide.tags.map((tag) => (
@@ -80,7 +80,7 @@ export default async function GuidePage({ params }: PageProps) {
                 rehypePlugins: [
                   [
                     rehypePrettyCode,
-                    { theme: "one-dark-pro", keepBackground: true },
+                    { theme: { dark: "one-dark-pro", light: "github-light" }, keepBackground: true },
                   ],
                 ],
               },
