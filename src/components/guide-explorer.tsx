@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import { Search } from "lucide-react";
 import { useDebounce } from "@/hooks/use-debounce";
 import { searchGuides } from "@/lib/search";
@@ -8,10 +8,26 @@ import { GuideCard } from "@/components/guide-card";
 import { CATEGORIES, type Category } from "@/lib/categories";
 import type { GuideMeta } from "@/lib/guides";
 
+function getCategoryFromHash(): Category | null {
+  if (typeof window === "undefined") return null;
+  const hash = window.location.hash.slice(1);
+  return hash in CATEGORIES ? (hash as Category) : null;
+}
+
 export function GuideExplorer({ guides }: { guides: GuideMeta[] }) {
   const [query, setQuery] = useState("");
   const [active, setActive] = useState<Category | null>(null);
   const debouncedQuery = useDebounce(query, 200);
+
+  const syncFromHash = useCallback(() => {
+    setActive(getCategoryFromHash());
+  }, []);
+
+  useEffect(() => {
+    syncFromHash();
+    window.addEventListener("hashchange", syncFromHash);
+    return () => window.removeEventListener("hashchange", syncFromHash);
+  }, [syncFromHash]);
 
   const results = useMemo(() => {
     let filtered = guides;
@@ -33,7 +49,10 @@ export function GuideExplorer({ guides }: { guides: GuideMeta[] }) {
           <button
             key={key}
             type="button"
-            onClick={() => setActive(active === key ? null : key)}
+            onClick={() => {
+              const next = active === key ? null : key;
+              window.location.hash = next ?? "";
+            }}
             className={`rounded-xl border p-4 text-left transition-all hover:border-primary/30 hover:shadow-md ${
               active === key
                 ? "border-primary bg-primary/5 shadow-md"
